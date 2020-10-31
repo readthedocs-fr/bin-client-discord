@@ -1,0 +1,7 @@
+{
+  "maxNumberOfLines": 20,
+  "bin": {
+    "url": "http://localhost:8012/new",
+    "longevityInMinutes": 1440
+  }
+}

@@ -1,6 +1,9 @@
 dependencies:
+  '@types/node-fetch': 2.5.7
   discord.js: 12.4.1
   dotenv: 8.2.0
+  form-data: 3.0.0
+  node-fetch: 2.6.1
   source-map-support: 0.5.19
   typescript: 4.0.5
 devDependencies:
@@ -78,10 +81,21 @@ packages:
     dev: true
     resolution:
       integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
+  /@types/node-fetch/2.5.7:
+    dependencies:
+      '@types/node': 14.14.6
+      form-data: 3.0.0
+    dev: false
+    resolution:
+      integrity: sha512-o2WVNf5UhWRkxlf6eq+jMZDu7kjgpgJfl4xVNlvryc95O/6F2ld8ztKX+qu+Rjyet93WAWm5LjeX9H5FGkODvw==
   /@types/node/14.14.5:
     dev: true
     resolution:
       integrity: sha512-H5Wn24s/ZOukBmDn03nnGTp18A60ny9AmCwnEcgJiTgSGsCO7k+NWP7zjCCbhlcnVCoI+co52dUAt9GMhOSULw==
+  /@types/node/14.14.6:
+    dev: false
+    resolution:
+      integrity: sha512-6QlRuqsQ/Ox/aJEQWBEJG7A9+u7oSYl3mem/K8IzxXG/kAGbV1YPD9Bg9Zw3vyxC/YP+zONKwy8hGkSt1jxFMw==
   /@typescript-eslint/eslint-plugin/3.10.1_cd95866288282abbe79f0b9504082480:
     dependencies:
       '@typescript-eslint/experimental-utils': 3.10.1_eslint@7.12.1+typescript@4.0.5
@@ -820,6 +834,16 @@ packages:
     dev: true
     resolution:
       integrity: sha512-r5wGx7YeOwNWNlCA0wQ86zKyDLMQr+/RB8xy74M4hTphfmjlijTSSXGuH8rnvKZnfT9i+75zmd8jcKdMR4O6jA==
+  /form-data/3.0.0:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.27
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-CKMFDglpbMi6PyN+brwB9Q/GOw0eAnsrEZDgcsH5Krhz5Od/haKHAX0NmQfha2zPPz0JpWzA7GJHGSnvCRLWsg==
   /fs.realpath/1.0.0:
     dev: true
     resolution:
@@ -1667,6 +1691,7 @@ packages:
       integrity: sha512-D3RuNkynyHmEJIpD2qrgVkc9DQ23OrN/moAwZX4L8DfvszsJxpjQuUq3LMx6HoYji9fbIOBY18XWBsAux1ZZUA==
 specifiers:
   '@types/node': ^14.14.5
+  '@types/node-fetch': ^2.5.7
   '@typescript-eslint/eslint-plugin': ^3.10.1
   '@typescript-eslint/parser': ^3.10.1
   discord.js: ^12.4.1
@@ -1678,6 +1703,8 @@ specifiers:
   eslint-plugin-json: ^2.1.2
   eslint-plugin-prettier: ^3.1.4
   eslint-plugin-simple-import-sort: ^5.0.3
+  form-data: ^3.0.0
+  node-fetch: ^2.6.1
   prettier: ^2.1.2
   source-map-support: ^0.5.19
   typescript: ^4.0.5

@@ -2,7 +2,9 @@ import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 
 import { Client } from "../../classes/Client";
 import { Event } from "../../classes/Event";
+import { createBin } from "../../functions/createBin";
 import { getCode } from "../../functions/getCode";
+import { getConfig } from "../../functions/getConfig";
 
 export default class CodeInMessageEvent extends Event {
 	constructor(client: Client) {
@@ -10,7 +12,7 @@ export default class CodeInMessageEvent extends Event {
 	}
 
 	async listener(message: Message): Promise<void> {
-		const MAX_LINES_ALLOWED = 20;
+		const MAX_LINES_ALLOWED = (await getConfig()).maxNumberOfLines;
 
 		if (!message.guild || message.author.bot) {
 			return;
@@ -25,17 +27,16 @@ export default class CodeInMessageEvent extends Event {
 		let rest = message.content;
 
 		for (const block of matches) {
-			const { /* language, */ code } = getCode(block);
+			const { language, code } = getCode(block);
 
 			if (!code || code.split("\n").length - 1 < MAX_LINES_ALLOWED - 1) {
 				// - 1 as code is trimmed (one \n is lost)
 				continue; // not enough newlines
 			}
 
-			// TODO: const bin = createBin(code, language = "txt");
-			const bin = "https://bin.readthedocs.fr/ifTgJ24f";
+			const bin = await createBin(code, language || "txt");
 
-			rest = rest.replace(block, bin);
+			rest = rest.replace(block, bin || "[error, please warn the bot owner]");
 		}
 
 		if (message.content === rest) {
