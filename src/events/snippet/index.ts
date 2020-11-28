@@ -27,7 +27,7 @@ export default class SnippetEvent extends Event {
 
 			const bin = await createBin(code, language || "txt");
 
-			rest = rest.replace(block, bin || "[error, please warn the bot owner]");
+			rest = rest.replace(block, bin instanceof Error ? bin.message : bin);
 		}
 
 		if (message.content === rest) {

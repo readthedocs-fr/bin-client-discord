@@ -5,6 +5,7 @@ import { Client } from "../../classes/Client";
 import { Event } from "../../classes/Event";
 import { createBin } from "../../functions/createBin";
 import { sendBinEmbed } from "../../functions/sendBinEmbed";
+import { extensions } from "../../misc/extensions";
 
 export default class FileEvent extends Event {
 	constructor(client: Client) {
@@ -13,7 +14,13 @@ export default class FileEvent extends Event {
 
 	async listener(message: Message, attachments: Collection<string, MessageAttachment>): Promise<void> {
 		const file = attachments.first(); // only take first attachment as, normally, users cannot send more than one attachment
-		if (!file) {
+
+		if (!file || file.width) {
+			return;
+		}
+
+		const language = (file.name?.match(/\..+$/) ? file.name?.split(".").pop() : "txt") as string;
+		if (!extensions.has(language)) {
 			return;
 		}
 
@@ -23,11 +30,10 @@ export default class FileEvent extends Event {
 		if (!code) {
 			return;
 		}
-		const language = file.name?.match(/\..+$/) ? file.name.split(".").pop() : "txt";
 
 		const bin = await createBin(code, language);
 
-		const content = `${message.content} ${bin}`.trimStart();
+		const content = `${message.content} ${bin instanceof Error ? bin.message : bin}`.trimStart();
 
 		await sendBinEmbed(message, content);
 	}
