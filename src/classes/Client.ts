@@ -53,7 +53,7 @@ class Client extends DiscordClient {
 		await this.login(process.env.TOKEN);
 		await this.user?.setPresence({
 			activity: {
-				name: "code snippets!",
+				name: "code snippets",
 				type: "LISTENING",
 			},
 			status: "online",

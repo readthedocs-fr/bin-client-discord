@@ -1,8 +1,10 @@
+import { Snowflake } from "discord.js";
 import { promises as fs } from "fs";
 import * as path from "path";
 
 interface Config {
 	maxNumberOfLines: number;
+	categoryId: Snowflake;
 	bin: {
 		url: string;
 		longevityInMinutes: number;
