@@ -1,6 +1,5 @@
 dependencies:
   discord.js: 12.5.1
-  form-data: 3.0.0
   node-fetch: 2.6.1
   source-map-support: 0.5.19
   typescript: 4.1.2
@@ -968,6 +967,7 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.27
+    dev: true
     engines:
       node: '>= 6'
     resolution:
@@ -1915,7 +1915,6 @@ specifiers:
   eslint-plugin-json: ^2.1.2
   eslint-plugin-prettier: ^3.1.4
   eslint-plugin-simple-import-sort: ^6.0.1
-  form-data: ^3.0.0
   node-fetch: ^2.6.1
   prettier: ^2.2.0
   source-map-support: ^0.5.19
