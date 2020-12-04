@@ -1,15 +1,15 @@
 dependencies:
-  '@types/node-fetch': 2.5.7
   discord.js: 12.5.1
-  dotenv: 8.2.0
   form-data: 3.0.0
   node-fetch: 2.6.1
   source-map-support: 0.5.19
   typescript: 4.1.2
 devDependencies:
   '@types/node': 14.14.10
+  '@types/node-fetch': 2.5.7
   '@typescript-eslint/eslint-plugin': 4.8.2_6341bfd4e6c74608cac2d9a1d059520a
   '@typescript-eslint/parser': 4.8.2_eslint@7.14.0+typescript@4.1.2
+  dotenv: 8.2.0
   eslint: 7.14.0
   eslint-config-airbnb-typescript: 12.0.0_0af68fabafd518a53336ce0a1060e5cc
   eslint-config-prettier: 6.15.0_eslint@7.14.0
@@ -105,10 +105,11 @@ packages:
     dependencies:
       '@types/node': 14.14.10
       form-data: 3.0.0
-    dev: false
+    dev: true
     resolution:
       integrity: sha512-o2WVNf5UhWRkxlf6eq+jMZDu7kjgpgJfl4xVNlvryc95O/6F2ld8ztKX+qu+Rjyet93WAWm5LjeX9H5FGkODvw==
   /@types/node/14.14.10:
+    dev: true
     resolution:
       integrity: sha512-J32dgx2hw8vXrSbu4ZlVhn1Nm3GbeCFNw2FWL8S5QKucHGY0cyNwjdQdO+KMBZ4wpmC7KhLCiNsdk1RFRIYUQQ==
   /@typescript-eslint/eslint-plugin/4.8.2_6341bfd4e6c74608cac2d9a1d059520a:
@@ -387,7 +388,6 @@ packages:
     resolution:
       integrity: sha512-+Ryf6g3BKoRc7jfp7ad8tM4TtMiaWvbF/1/sQcZPkkS7ag3D5nMBCe2UfOTONtAkaG0tO0ij3C5Lwmf1EiyjHg==
   /asynckit/0.4.0:
-    dev: false
     resolution:
       integrity: sha1-x57Zf380y48robyXkLzDZkdLS3k=
   /balanced-match/1.0.0:
@@ -470,7 +470,6 @@ packages:
   /combined-stream/1.0.8:
     dependencies:
       delayed-stream: 1.0.0
-    dev: false
     engines:
       node: '>= 0.8'
     resolution:
@@ -531,7 +530,6 @@ packages:
     resolution:
       integrity: sha512-3MqfYKj2lLzdMSf8ZIZE/V+Zuy+BgD6f164e8K2w7dgnpKArBDerGYpM46IYYcjnkdPNMjPk9A6VFB8+3SKlXQ==
   /delayed-stream/1.0.0:
-    dev: false
     engines:
       node: '>=0.4.0'
     resolution:
@@ -577,7 +575,7 @@ packages:
     resolution:
       integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==
   /dotenv/8.2.0:
-    dev: false
+    dev: true
     engines:
       node: '>=8'
     resolution:
@@ -970,7 +968,6 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.27
-    dev: false
     engines:
       node: '>= 6'
     resolution:
@@ -1277,7 +1274,6 @@ packages:
     resolution:
       integrity: sha512-y7FpHSbMUMoyPbYUSzO6PaZ6FyRnQOpHuKwbo1G+Knck95XVU4QAiKdGEnj5wwoS7PlOgthX/09u5iFJ+aYf5Q==
   /mime-db/1.44.0:
-    dev: false
     engines:
       node: '>= 0.6'
     resolution:
@@ -1285,7 +1281,6 @@ packages:
   /mime-types/2.1.27:
     dependencies:
       mime-db: 1.44.0
-    dev: false
     engines:
       node: '>= 0.6'
     resolution:

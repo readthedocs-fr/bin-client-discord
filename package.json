@@ -12,9 +12,7 @@
   "author": "Aakodal",
   "license": "ISC",
   "dependencies": {
-    "@types/node-fetch": "^2.5.7",
     "discord.js": "^12.5.1",
-    "dotenv": "^8.2.0",
     "form-data": "^3.0.0",
     "node-fetch": "^2.6.1",
     "source-map-support": "^0.5.19",
@@ -22,8 +20,10 @@
   },
   "devDependencies": {
     "@types/node": "^14.14.10",
+    "@types/node-fetch": "^2.5.7",
     "@typescript-eslint/eslint-plugin": "^4.8.2",
     "@typescript-eslint/parser": "^4.8.2",
+    "dotenv": "^8.2.0",
     "eslint": "^7.14.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^6.15.0",
