@@ -27,6 +27,7 @@ export default class FileEvent extends Event {
 		const code = await fetch(file.url)
 			.then((res) => res.text())
 			.catch(() => {});
+
 		if (!code) {
 			return;
 		}
