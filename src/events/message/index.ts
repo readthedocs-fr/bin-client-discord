@@ -15,7 +15,7 @@ export default class CodeInMessageEvent extends Event {
 			!message.guild ||
 			message.author.bot ||
 			!(message.channel instanceof GuildChannel) ||
-			message.channel.parentID !== config.categoryId
+			!config.categoryIds.includes(message.channel.parentID as string)
 		) {
 			return;
 		}

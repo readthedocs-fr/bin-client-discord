@@ -4,7 +4,7 @@ import * as path from "path";
 
 interface Config {
 	maxNumberOfLines: number;
-	categoryId: Snowflake;
+	categoryIds: Snowflake[];
 	bin: {
 		url: string;
 		longevityInMinutes: number;
