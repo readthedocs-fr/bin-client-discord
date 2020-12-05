@@ -17,10 +17,11 @@ export async function sendBinEmbed(message: Message, content: string): Promise<v
 
 	const filter = (reaction: MessageReaction, user: User): boolean =>
 		reaction.message.id === botMessage.id && user.id === message.author.id && reaction.emoji.name === "🗑️";
-	const collector = await botMessage.awaitReactions(filter, { max: 1 });
+	const collector = await botMessage.awaitReactions(filter, { max: 1, time: 20 * 1000 });
 	const reaction = collector.first();
 
 	if (!reaction) {
+		await botMessage.reactions.removeAll().catch(() => {});
 		return;
 	}
 	if (reaction.partial) {
