@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 
 import { Client } from "../../classes/Client";
 import { Event } from "../../classes/Event";
+import { blockMatcher, blocksToBins } from "../../functions/codeBlock";
 import { createBin } from "../../functions/createBin";
 import { sendBinEmbed } from "../../functions/sendBinEmbed";
 import { extensions } from "../../misc/extensions";
@@ -34,7 +35,11 @@ export default class FileEvent extends Event {
 
 		const bin = await createBin(code, language);
 
-		const content = `${message.content} ${bin instanceof Error ? bin.message : bin}`.trimStart();
+		const blocks = await blockMatcher(message.content);
+
+		const content = `${await blocksToBins(message.content, blocks)} ${
+			bin instanceof Error ? bin.message : bin
+		}`.trimStart();
 
 		await sendBinEmbed(message, content);
 	}

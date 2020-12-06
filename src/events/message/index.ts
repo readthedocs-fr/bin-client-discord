@@ -2,6 +2,7 @@ import { GuildChannel, Message } from "discord.js";
 
 import { Client } from "../../classes/Client";
 import { Event } from "../../classes/Event";
+import { blockMatcher } from "../../functions/codeBlock";
 import { getConfig } from "../../functions/getConfig";
 
 export default class CodeInMessageEvent extends Event {
@@ -20,17 +21,16 @@ export default class CodeInMessageEvent extends Event {
 			return;
 		}
 
-		const matches = message.content.match(/`{3}.*\n*(.+\n*)*?`{3}/g);
-		if (matches) {
-			this.client.emit("snippet", message, matches);
-			return;
-		}
-
 		const { attachments } = message;
-		if (attachments.size === 0) {
+		if (attachments.size !== 0) {
+			this.client.emit("file", message, attachments);
 			return;
 		}
 
-		this.client.emit("file", message, attachments);
+		const blocks = await blockMatcher(message.content);
+
+		if (blocks.size !== 0) {
+			this.client.emit("snippet", message, blocks);
+		}
 	}
 }

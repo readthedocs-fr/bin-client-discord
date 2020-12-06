@@ -2,9 +2,7 @@ import { Message } from "discord.js";
 
 import { Client } from "../../classes/Client";
 import { Event } from "../../classes/Event";
-import { createBin } from "../../functions/createBin";
-import { getCode } from "../../functions/getCode";
-import { getConfig } from "../../functions/getConfig";
+import { blocksToBins } from "../../functions/codeBlock";
 import { sendBinEmbed } from "../../functions/sendBinEmbed";
 
 export default class SnippetEvent extends Event {
@@ -12,28 +10,13 @@ export default class SnippetEvent extends Event {
 		super("snippet", client);
 	}
 
-	async listener(message: Message, matches: RegExpMatchArray): Promise<void> {
-		const MAX_LINES_ALLOWED = (await getConfig()).maxNumberOfLines;
+	async listener(message: Message, blocks: Map<string, { language: string; code: string }>): Promise<void> {
+		const content = await blocksToBins(message.content, blocks);
 
-		let rest = message.content;
-
-		for (const block of matches) {
-			const { language, code } = getCode(block);
-
-			if (!code || code.split("\n").length < MAX_LINES_ALLOWED) {
-				// - 1 as code is trimmed (one \n is lost)
-				continue; // not enough newlines
-			}
-
-			const bin = await createBin(code, language || "txt");
-
-			rest = rest.replace(block, bin instanceof Error ? bin.message : bin);
-		}
-
-		if (message.content === rest) {
+		if (message.content === content) {
 			return;
 		}
 
-		await sendBinEmbed(message, rest);
+		await sendBinEmbed(message, content);
 	}
 }
