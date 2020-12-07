@@ -3,7 +3,6 @@ import { GuildChannel, Message } from "discord.js";
 import { Client } from "../../classes/Client";
 import { Event } from "../../classes/Event";
 import { blockMatcher } from "../../functions/codeBlock";
-import { getConfig } from "../../functions/getConfig";
 
 export default class CodeInMessageEvent extends Event {
 	constructor(client: Client) {
@@ -11,12 +10,12 @@ export default class CodeInMessageEvent extends Event {
 	}
 
 	async listener(message: Message): Promise<void> {
-		const config = await getConfig();
+		const categories = process.env.CATEGORIES?.split(" ");
 		if (
 			!message.guild ||
 			message.author.bot ||
 			!(message.channel instanceof GuildChannel) ||
-			!config.categoryIds.includes(message.channel.parentID as string)
+			!categories?.includes(message.channel.parentID as string)
 		) {
 			return;
 		}

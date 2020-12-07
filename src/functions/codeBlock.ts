@@ -1,6 +1,5 @@
 import { createBin } from "./createBin";
 import { getCode } from "./getCode";
-import { getConfig } from "./getConfig";
 
 export async function blockMatcher(content: string): Promise<Map<string, { language: string; code: string }>> {
 	const matches = content.match(/`{3}.*\n*(.+\n*)*?`{3}/g);
@@ -10,7 +9,7 @@ export async function blockMatcher(content: string): Promise<Map<string, { langu
 		return blocks;
 	}
 
-	const MAX_LINES_ALLOWED = (await getConfig()).maxNumberOfLines;
+	const MAX_LINES_ALLOWED = Number(process.env.MAX_LINES);
 
 	for (const block of matches) {
 		const { language, code } = getCode(block);

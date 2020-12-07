@@ -4,6 +4,7 @@ import * as path from "path";
 
 import { capitalize } from "../functions/capitalize";
 import { formatDate } from "../functions/formatDate";
+import { isCurrentEnvValid } from "../functions/isCurrentEnvValid";
 import { Command } from "./Command";
 import { Event } from "./Event";
 
@@ -24,6 +25,10 @@ class Client extends DiscordClient {
 	}
 
 	async init(): Promise<void> {
+		if (!isCurrentEnvValid()) {
+			throw new Error("Current environment is invalid.");
+		}
+
 		const commandsPath = path.join(__dirname, "../commands/");
 		const commandsFolders = await fs.readdir(commandsPath).catch(() => null);
 		if (commandsFolders) {
