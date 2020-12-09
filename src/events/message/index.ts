@@ -10,12 +10,12 @@ export default class CodeInMessageEvent extends Event {
 	}
 
 	async listener(message: Message): Promise<void> {
-		const categories = process.env.CATEGORIES?.split(" ");
+		const categories = process.env.CATEGORIES!.split(" ");
 		if (
 			!message.guild ||
 			message.author.bot ||
 			!(message.channel instanceof GuildChannel) ||
-			!categories?.includes(message.channel.parentID as string)
+			!categories.includes(message.channel.parentID!)
 		) {
 			return;
 		}

@@ -20,7 +20,7 @@ export default class FileEvent extends Event {
 			return;
 		}
 
-		const language = (file.name?.match(/\..+$/) ? file.name?.split(".").pop() : "txt") as string;
+		const language = (file.name?.match(/\..+$/) ? file.name?.split(".").pop() : "txt")!;
 		if (!extensions.has(language)) {
 			return;
 		}

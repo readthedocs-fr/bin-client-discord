@@ -11,7 +11,7 @@ export async function createBin(code: string, language = "txt"): Promise<string 
 		lang: language,
 	});
 
-	const binUrl = process.env.BIN_URL as string;
+	const binUrl = process.env.BIN_URL!;
 	return fetch(binUrl, {
 		method: "POST",
 		body,

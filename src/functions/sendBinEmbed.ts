@@ -2,7 +2,7 @@ import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 
 export async function sendBinEmbed(message: Message, content: string): Promise<void> {
 	const embed = new MessageEmbed()
-		.setAuthor(message.member?.displayName as string, message.author.displayAvatarURL({ dynamic: true }))
+		.setAuthor(message.member?.displayName, message.author.displayAvatarURL({ dynamic: true }))
 		.setDescription(content)
 		.setTimestamp(message.createdAt);
 

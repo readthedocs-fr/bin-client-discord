@@ -1,9 +1,10 @@
-import { createBin } from "./createBin";
-import { getCode } from "./getCode";
+import { lexer as markdown } from "marked";
 
-export async function blockMatcher(content: string): Promise<Map<string, { language: string; code: string }>> {
-	const matches = content.match(/`{3}.*\n*(.+\n*)*?`{3}/g);
-	const blocks = new Map<string, { language: string; code: string }>();
+import { createBin } from "./createBin";
+
+export async function blockMatcher(content: string): Promise<Map<string, { language?: string; code: string }>> {
+	const matches = markdown(content);
+	const blocks = new Map<string, { language?: string; code: string }>();
 
 	if (!matches) {
 		return blocks;
@@ -12,10 +13,14 @@ export async function blockMatcher(content: string): Promise<Map<string, { langu
 	const MAX_LINES_ALLOWED = Number(process.env.MAX_LINES);
 
 	for (const block of matches) {
-		const { language, code } = getCode(block);
+		if (!("lang" in block)) {
+			continue;
+		}
 
-		if (code && code.split("\n").length >= MAX_LINES_ALLOWED && !blocks.has(block)) {
-			blocks.set(block, { language, code });
+		const { lang: language, text: code } = block;
+
+		if (code && code.split("\n").length >= MAX_LINES_ALLOWED && !blocks.has(block.raw)) {
+			blocks.set(block.raw, { language, code });
 		}
 	}
 
@@ -24,7 +29,7 @@ export async function blockMatcher(content: string): Promise<Map<string, { langu
 
 export async function blocksToBins(
 	content: string,
-	blocks: Map<string, { language: string; code: string }>,
+	blocks: Map<string, { language?: string; code: string }>,
 ): Promise<string> {
 	let result = content;
 
@@ -33,7 +38,7 @@ export async function blocksToBins(
 		const bin = await createBin(binInfos.code, binInfos.language);
 
 		// TODO: awaiting TypeScript for String#replaceAll implementation
-		result = result.split(blockString).join(bin instanceof Error ? bin.message : bin);
+		result = result.split(blockString).join(`${bin instanceof Error ? bin.message : bin} `);
 	}
 
 	return result;

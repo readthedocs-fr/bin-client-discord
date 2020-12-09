@@ -1,7 +1,9 @@
 dependencies:
+  '@types/marked': 1.2.1
   '@types/node': 14.14.10
   '@types/node-fetch': 2.5.7
   discord.js: 12.5.1
+  marked: 1.2.5
   node-fetch: 2.6.1
   source-map-support: 0.5.19
   typescript: 4.1.2
@@ -100,6 +102,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
+  /@types/marked/1.2.1:
+    dev: false
+    resolution:
+      integrity: sha512-d5adCgRHB+NAme23hkiTkvpfZUDqoNtL2Sr2nZBJqSj3zyHLxsfFWsGQ2sK2z9aX6L1xkJzon2c0jTPcsEjpaQ==
   /@types/node-fetch/2.5.7:
     dependencies:
       '@types/node': 14.14.10
@@ -1261,6 +1267,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
+  /marked/1.2.5:
+    dev: false
+    engines:
+      node: '>= 8.16.2'
+    hasBin: true
+    resolution:
+      integrity: sha512-2AlqgYnVPOc9WDyWu7S5DJaEZsfk6dNh/neatQ3IHUW4QLutM/VPSH9lG7bif+XjFWc9K9XR3QvR+fXuECmfdA==
   /merge2/1.4.1:
     dev: true
     engines:
@@ -1907,6 +1920,7 @@ packages:
     resolution:
       integrity: sha512-kyFwXuV/5ymf+IXhS6f0+eAFvydbaBW3zjpT6hUdAh/hbVjTIB5EHBGi0bPoCLSK2wcuz3BrEkB9LrYv1Nm4NQ==
 specifiers:
+  '@types/marked': ^1.2.1
   '@types/node': ^14.14.10
   '@types/node-fetch': ^2.5.7
   '@typescript-eslint/eslint-plugin': ^4.8.2
@@ -1920,6 +1934,7 @@ specifiers:
   eslint-plugin-json: ^2.1.2
   eslint-plugin-prettier: ^3.1.4
   eslint-plugin-simple-import-sort: ^6.0.1
+  marked: ^1.2.5
   node-fetch: ^2.6.1
   prettier: ^2.2.0
   source-map-support: ^0.5.19
