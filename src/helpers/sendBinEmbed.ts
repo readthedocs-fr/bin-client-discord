@@ -2,7 +2,7 @@ import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 
 export async function sendBinEmbed(message: Message, content: string): Promise<void> {
 	const embed = new MessageEmbed()
-		.setAuthor(message.member?.displayName, message.author.displayAvatarURL({ dynamic: true }))
+		.setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
 		.setDescription(content)
 		.setTimestamp(message.createdAt);
 
@@ -17,7 +17,7 @@ export async function sendBinEmbed(message: Message, content: string): Promise<v
 
 	const filter = (reaction: MessageReaction, user: User): boolean =>
 		reaction.message.id === botMessage.id && user.id === message.author.id && reaction.emoji.name === "🗑️";
-	const collector = await botMessage.awaitReactions(filter, { max: 1, time: 20 * 1000 });
+	const collector = await botMessage.awaitReactions(filter, { max: 1, time: 20000 });
 	const reaction = collector.first();
 
 	if (!reaction) {

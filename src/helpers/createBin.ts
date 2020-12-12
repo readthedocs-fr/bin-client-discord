@@ -3,7 +3,7 @@ import { encode } from "querystring";
 
 import { checkStatus } from "./checkStatus";
 
-const TOKEN_REGEXP = /[a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[a-zA-Z0-9_-]{27}|mfa\.[a-zA-Z0-9_-]{84}/g;
+const TOKEN_REGEXP = /[a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[\w-]{27}|mfa\.[\w-]{84}/g;
 
 export async function createBin(code: string, language = "txt"): Promise<string | Error> {
 	const body = encode({

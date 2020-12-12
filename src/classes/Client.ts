@@ -1,67 +1,57 @@
 import { Client as DiscordClient, ClientOptions } from "discord.js";
-import { promises as fs } from "fs";
-import * as path from "path";
+import { readdir } from "fs/promises";
+import { join } from "path";
 
-import { capitalize } from "../functions/capitalize";
-import { formatDate } from "../functions/formatDate";
-import { isCurrentEnvValid } from "../functions/isCurrentEnvValid";
-import { Command } from "./Command";
-import { Event } from "./Event";
+import { capitalize, formatDate, isCurrentEnvValid } from "../helpers";
+import { Command, Event } from ".";
 
+const noop = (): void => {};
 class Client extends DiscordClient {
-	commands: Map<string, Command>;
+	public commands = new Map<string, Command>();
 
-	aliases: Map<string, Command>;
+	public aliases = new Map<string, Command>();
 
-	operational: boolean;
+	public operational = false;
 
-	constructor(options?: ClientOptions) {
+	public constructor(options?: ClientOptions) {
 		super(options);
-
-		this.commands = new Map();
-		this.aliases = new Map();
-
-		this.operational = false;
 	}
 
-	async init(): Promise<void> {
+	public async init(): Promise<void> {
 		if (!isCurrentEnvValid()) {
 			throw new Error("Current environment is invalid.");
 		}
 
-		const commandsPath = path.join(__dirname, "../commands/");
-		const commandsFolders = await fs.readdir(commandsPath).catch(() => null);
+		const commandsPath = join(__dirname, "../commands/");
+		const commandsFolders = await readdir(commandsPath).catch(noop);
 		if (commandsFolders) {
 			for (const folder of commandsFolders) {
-				const commandPath = path.join(commandsPath, folder);
+				const commandPath = join(commandsPath, folder);
 				try {
 					await this.loadCommand(commandPath);
 				} catch (error) {
-					console.error(`Could not load command in ${folder};\n${error.stackTrace}`);
+					console.error(`Could not load command in ${folder}.`, error);
 				}
 			}
 		}
 
-		const eventsPath = path.join(__dirname, "../events/");
-		const eventsFolders = await fs.readdir(eventsPath).catch(() => null);
+		const eventsPath = join(__dirname, "../events/");
+		const eventsFolders = await readdir(eventsPath).catch(noop);
 		if (eventsFolders) {
 			for (const folder of eventsFolders) {
-				const eventPath = path.join(eventsPath, folder);
+				const eventPath = join(eventsPath, folder);
 				try {
 					await this.loadEvent(eventPath, folder);
 				} catch (error) {
-					console.error(`Could not load event in ${folder};\n${error.stackTrace}`);
+					console.error(`Could not load event in ${folder}.`, error);
 				}
 			}
 		}
 
 		await this.login(process.env.TOKEN);
-		await this.user?.setPresence({
-			activity: {
-				name: "code snippets",
-				type: "LISTENING",
-			},
-			status: "online",
+		await this.user?.setActivity({
+			name: "code snippets",
+			type: "LISTENING",
 		});
 
 		console.log(`ReadTheBin started at ${formatDate()}.`);

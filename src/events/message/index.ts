@@ -1,35 +1,69 @@
 import { GuildChannel, Message } from "discord.js";
+import fetch from "node-fetch";
+import { extname } from "path";
 
-import { Client } from "../../classes/Client";
-import { Event } from "../../classes/Event";
-import { blockMatcher } from "../../functions/codeBlock";
+import { Client, Event } from "../../classes";
+import { blockMatcher, blocksToBins, createBin, sendBinEmbed } from "../../helpers";
+import { extensions } from "../../misc/extensions";
 
-export default class CodeInMessageEvent extends Event {
+export default class MessageEvent extends Event {
 	constructor(client: Client) {
 		super("message", client);
 	}
 
 	async listener(message: Message): Promise<void> {
-		const categories = process.env.CATEGORIES!.split(" ");
+		const categories = process.env.CATEGORIES!.split(",");
 		if (
-			!message.guild ||
-			message.author.bot ||
 			!(message.channel instanceof GuildChannel) ||
+			message.author.bot ||
 			!categories.includes(message.channel.parentID!)
 		) {
 			return;
 		}
 
-		const { attachments } = message;
-		if (attachments.size !== 0) {
-			this.client.emit("file", message, attachments);
+		if (message.attachments.size > 0) {
+			const file = message.attachments.first(); // only take first attachment as, normally, users cannot send more than one attachment
+
+			if (!file?.name || file?.width) {
+				return;
+			}
+
+			const fileExtension = extname(file.name).replace(".", "");
+			const language = fileExtension === "" ? "txt" : fileExtension;
+			if (language !== "txt" && !extensions.has(language)) {
+				return;
+			}
+
+			const code = await fetch(file.url)
+				.then((res) => res.text())
+				.catch(() => {});
+
+			if (!code) {
+				return;
+			}
+
+			const bin = await createBin(code, language);
+
+			const blocks = await blockMatcher(message.content);
+
+			const content = `${await blocksToBins(message.content, blocks)} ${
+				bin instanceof Error ? bin.message : bin
+			}`.trimStart();
+
+			await sendBinEmbed(message, content);
 			return;
 		}
 
 		const blocks = await blockMatcher(message.content);
 
-		if (blocks.size !== 0) {
-			this.client.emit("snippet", message, blocks);
+		if (blocks.size > 0) {
+			const content = await blocksToBins(message.content, blocks);
+
+			if (message.content === content) {
+				return;
+			}
+
+			sendBinEmbed(message, content);
 		}
 	}
 }
