@@ -18,9 +18,10 @@ export async function blockMatcher(content: string): Promise<Map<string, { langu
 		}
 
 		const { lang: language, text: code } = block;
+		const raw = block.raw.trim();
 
-		if (code.split("\n", MAX_LINES).length === MAX_LINES && !blocks.has(block.raw)) {
-			blocks.set(block.raw, { language, code });
+		if (code.split("\n", MAX_LINES).length === MAX_LINES && !blocks.has(raw)) {
+			blocks.set(raw, { language, code });
 		}
 	}
 
@@ -35,8 +36,8 @@ export async function blocksToBins(
 
 	for (const [blockString, binInfos] of blocks.entries()) {
 		const bin = await createBin(binInfos.code, binInfos.language);
-		result = result.replace(blockString, `${bin instanceof Error ? bin.message : bin} `);
+		result = result.replaceAll(blockString, bin instanceof Error ? bin.message : bin);
 	}
 
-	return result.trimEnd();
+	return result;
 }

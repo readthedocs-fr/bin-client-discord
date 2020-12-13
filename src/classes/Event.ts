@@ -3,6 +3,7 @@ import { ClientEvents } from "discord.js";
 import { Client } from "./Client";
 
 type EventName = keyof ClientEvents | string;
+
 export abstract class Event {
 	public readonly event: EventName;
 

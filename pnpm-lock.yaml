@@ -5,7 +5,7 @@ dependencies:
   source-map-support: 0.5.19
 devDependencies:
   '@types/marked': 1.2.1
-  '@types/node': 14.14.10
+  '@types/node': 14.14.13
   '@types/node-fetch': 2.5.7
   '@typescript-eslint/eslint-plugin': 4.8.2_6341bfd4e6c74608cac2d9a1d059520a
   '@typescript-eslint/parser': 4.8.2_eslint@7.14.0+typescript@4.1.2
@@ -133,6 +133,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-J32dgx2hw8vXrSbu4ZlVhn1Nm3GbeCFNw2FWL8S5QKucHGY0cyNwjdQdO+KMBZ4wpmC7KhLCiNsdk1RFRIYUQQ==
+  /@types/node/14.14.13:
+    dev: true
+    resolution:
+      integrity: sha512-vbxr0VZ8exFMMAjCW8rJwaya0dMCDyYW2ZRdTyjtrCvJoENMpdUHOT/eTzvgyA5ZnqRZ/sI0NwqAxNHKYokLJQ==
   /@typescript-eslint/eslint-plugin/4.8.2_6341bfd4e6c74608cac2d9a1d059520a:
     dependencies:
       '@typescript-eslint/experimental-utils': 4.8.2_eslint@7.14.0+typescript@4.1.2
@@ -2564,7 +2568,7 @@ packages:
       integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 specifiers:
   '@types/marked': ^1.2.1
-  '@types/node': ^14.14.10
+  '@types/node': ^14.14.13
   '@types/node-fetch': ^2.5.7
   '@typescript-eslint/eslint-plugin': ^4.8.2
   '@typescript-eslint/parser': ^4.8.2

@@ -3,9 +3,9 @@
         "module": "commonjs",
         "rootDir": "./src",
         "outDir": "./build",
-        "target": "ES2020",
+        "target": "ESNext",
         "lib": [
-            "ES2020"
+            "ESNext"
         ],
         "strict": true,
         "skipLibCheck": true,
