@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "tsc",
-		"pegjs": "pegjs --plugin ts-pegjs -o ./src/helpers/contentLexer.ts --cache ./src/helpers/contentLexer.pegjs",
+		"pegjs": "pegjs --plugin ts-pegjs --extra-options-file pegconfig.json -o ./src/helpers/contentLexer.ts --cache ./src/helpers/contentLexer.pegjs",
 		"start": "node -r source-map-support/register -r dotenv/config .",
 		"dev": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"ts-node -r dotenv/config src/index.ts\"",
 		"lint": "eslint src --ext ts",
