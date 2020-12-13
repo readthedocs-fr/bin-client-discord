@@ -7,6 +7,7 @@ interface TextNode {
 	type: "text";
 	content: string;
 }
+
 interface CodeNode {
 	type: "code";
 	content: string;
@@ -15,9 +16,11 @@ interface CodeNode {
 	inline: boolean;
 	isBig?: boolean;
 }
+
 interface BlankNode {
 	type: "blank";
 }
+
 type Parsed = Array<CodeNode | TextNode | BlankNode>;
 
 export function blockMatcher(content: string): Parsed {
@@ -26,13 +29,17 @@ export function blockMatcher(content: string): Parsed {
 		let containsBigCode = false;
 		for (let i = 0; i < matches.length; i++) {
 			const node = matches[i];
+
 			if (node.type !== "code") {
 				continue;
 			}
+
 			node.isBig = node.content.split("\n", MAX_LINES).length === MAX_LINES;
+
 			if (node.isBig) {
 				containsBigCode = true;
 			}
+
 			matches[i] = node;
 		}
 		return containsBigCode ? matches : [];
@@ -55,10 +62,12 @@ export async function blocksToBins(nodes: Parsed): Promise<string> {
 		if (curr.isBig) {
 			const isExists = accum.codes.has(curr.raw);
 			let code: string | undefined = isExists ? accum.codes.get(curr.raw) : undefined;
+
 			if (!isExists) {
 				const bin = await createBin(curr.content, curr.lang);
 				accum.codes.set(curr.raw, (code = bin instanceof Error ? bin.message : bin));
 			}
+
 			return {
 				codes: accum.codes,
 				result: `${accum.result + code}\n`,
