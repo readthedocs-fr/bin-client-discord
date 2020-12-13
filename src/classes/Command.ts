@@ -13,26 +13,22 @@ type CommandInformations = {
 };
 
 export abstract class Command {
-	private readonly _informations: CommandInformations;
+	public readonly informations: CommandInformations;
 
 	protected readonly client: Client;
 
 	protected constructor(informations: CommandInformations, client: Client) {
-		this._informations = informations;
+		this.informations = informations;
 		this.client = client;
 	}
 
-	setCategory(category: string): void {
-		this._informations.category = category;
+	public setCategory(category: string): void {
+		this.informations.category = category;
 	}
 
-	setPath(path: string): void {
-		this._informations.path = path;
+	public setPath(path: string): void {
+		this.informations.path = path;
 	}
 
-	get informations(): CommandInformations {
-		return this._informations;
-	}
-
-	abstract run(message: Message, args: string[]): void | Promise<void>;
+	public abstract run(message: Message, args: string[]): void | Promise<void>;
 }

@@ -10,7 +10,7 @@ export async function blockMatcher(content: string): Promise<Map<string, { langu
 		return blocks;
 	}
 
-	const MAX_LINES_ALLOWED = Number(process.env.MAX_LINES);
+	const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 
 	for (const block of matches) {
 		if (!("lang" in block)) {
@@ -18,9 +18,10 @@ export async function blockMatcher(content: string): Promise<Map<string, { langu
 		}
 
 		const { lang: language, text: code } = block;
+		const raw = block.raw.trim();
 
-		if (code && code.split("\n").length >= MAX_LINES_ALLOWED && !blocks.has(block.raw)) {
-			blocks.set(block.raw, { language, code });
+		if (code.split("\n", MAX_LINES).length === MAX_LINES && !blocks.has(raw)) {
+			blocks.set(raw, { language, code });
 		}
 	}
 
@@ -33,12 +34,9 @@ export async function blocksToBins(
 ): Promise<string> {
 	let result = content;
 
-	for (const block of blocks.entries()) {
-		const [blockString, binInfos] = block;
+	for (const [blockString, binInfos] of blocks.entries()) {
 		const bin = await createBin(binInfos.code, binInfos.language);
-
-		// TODO: awaiting TypeScript for String#replaceAll implementation
-		result = result.split(blockString).join(`${bin instanceof Error ? bin.message : bin} `);
+		result = result.replaceAll(blockString, bin instanceof Error ? bin.message : bin);
 	}
 
 	return result;

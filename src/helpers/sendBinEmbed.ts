@@ -1,27 +1,28 @@
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 
-export async function sendBinEmbed(message: Message, content: string): Promise<void> {
-	const embed = new MessageEmbed()
-		.setAuthor(message.member?.displayName, message.author.displayAvatarURL({ dynamic: true }))
-		.setDescription(content)
+const noop = (): void => {};
+
+export async function sendBinEmbed(message: Message, description: string): Promise<void> {
+	const embed = new MessageEmbed({ description, timestamp: message.createdAt })
+		.setAuthor(message.member!.displayName, message.author.displayAvatarURL({ dynamic: true }))
 		.setTimestamp(message.createdAt);
 
-	const botMessage = await message.channel.send(embed).catch(() => {});
+	const botMessage = await message.channel.send(embed).catch(noop);
 	if (!botMessage) {
 		return;
 	}
 
-	await message.delete().catch(() => {});
+	await message.delete().catch(noop);
 
 	await botMessage.react("🗑️");
 
 	const filter = (reaction: MessageReaction, user: User): boolean =>
-		reaction.message.id === botMessage.id && user.id === message.author.id && reaction.emoji.name === "🗑️";
+		user.id === message.author.id && reaction.emoji.name === "🗑️";
 	const collector = await botMessage.awaitReactions(filter, { max: 1, time: 20 * 1000 });
 	const reaction = collector.first();
 
 	if (!reaction) {
-		await botMessage.reactions.removeAll().catch(() => {});
+		await botMessage.reactions.removeAll().catch(noop);
 		return;
 	}
 	if (reaction.partial) {

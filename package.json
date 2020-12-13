@@ -1,37 +1,42 @@
 {
-  "name": "readthebin",
-  "version": "1.0.0",
-  "description": "",
-  "main": "build/index.js",
-  "scripts": {
-    "build": "tsc",
-    "start": "node -r source-map-support/register -r dotenv/config .",
-    "check": "eslint \"src/**\"",
-    "format": "eslint --fix \"src/**\""
-  },
-  "author": "Aakodal",
-  "license": "ISC",
-  "dependencies": {
-    "@types/marked": "^1.2.1",
-    "@types/node": "^14.14.10",
-    "@types/node-fetch": "^2.5.7",
-    "discord.js": "^12.5.1",
-    "marked": "^1.2.5",
-    "node-fetch": "^2.6.1",
-    "source-map-support": "^0.5.19",
-    "typescript": "^4.1.2"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.8.2",
-    "@typescript-eslint/parser": "^4.8.2",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.14.0",
-    "eslint-config-airbnb-typescript": "^12.0.0",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-json": "^2.1.2",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-simple-import-sort": "^6.0.1",
-    "prettier": "^2.2.0"
-  }
+	"name": "readthebin",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"build": "tsc",
+		"start": "node -r source-map-support/register -r dotenv/config .",
+		"dev": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"ts-node -r dotenv/config src/index.ts\"",
+		"lint": "eslint src --ext ts",
+		"format": "npm run lint -- --fix"
+	},
+	"author": "Aakodal",
+	"license": "ISC",
+	"engines": {
+		"node": ">=15.0.0"
+	},
+	"dependencies": {
+		"discord.js": "^12.5.1",
+		"marked": "^1.2.5",
+		"node-fetch": "^2.6.1",
+		"source-map-support": "^0.5.19"
+	},
+	"devDependencies": {
+		"@types/marked": "^1.2.1",
+		"@types/node": "^14.14.13",
+		"@types/node-fetch": "^2.5.7",
+		"@typescript-eslint/eslint-plugin": "^4.8.2",
+		"@typescript-eslint/parser": "^4.8.2",
+		"dotenv": "^8.2.0",
+		"eslint": "^7.14.0",
+		"eslint-config-airbnb-typescript": "^12.0.0",
+		"eslint-config-prettier": "^6.15.0",
+		"eslint-plugin-import": "^2.22.1",
+		"eslint-plugin-json": "^2.1.2",
+		"eslint-plugin-prettier": "^3.1.4",
+		"eslint-plugin-simple-import-sort": "^6.0.1",
+		"nodemon": "^2.0.6",
+		"prettier": "^2.2.0",
+		"ts-node": "^9.1.1",
+		"typescript": "^4.1.2"
+	}
 }
