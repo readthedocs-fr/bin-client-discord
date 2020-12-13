@@ -17,7 +17,7 @@
 	},
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
-	  	"project": "./tsconfig.json",
+		"project": "./tsconfig.json",
 		"ecmaVersion": 2020,
 		"sourceType": "module"
 	},
@@ -32,7 +32,7 @@
 		"simple-import-sort/imports": "error",
 		"simple-import-sort/exports": "error",
 		"sort-imports": "off",
-    	"import/order": "off",
+		"import/order": "off",
 		"@typescript-eslint/indent": [
 			"error",
 			"tab",
@@ -64,6 +64,10 @@
 				"allowElseIf": false
 			}
 		],
+		"eol-last": [
+			"error",
+			"always"
+		],
 		"no-floating-decimal": "error",
 		"no-implicit-coercion": "error",
 		"no-multi-spaces": [
@@ -93,23 +97,23 @@
 		"import/prefer-default-export": "off",
 		"no-plusplus": "off",
 		"no-nested-ternary": "error",
-        "no-return-assign": "off",
-        "no-restricted-syntax": "off",
-        "no-await-in-loop": "off",
+		"no-return-assign": "off",
+		"no-restricted-syntax": "off",
+		"no-await-in-loop": "off",
 		"no-mixed-spaces-and-tabs": [
 			"error",
 			"smart-tabs"
 		],
 		"import/no-cycle": "off",
 		"@typescript-eslint/explicit-function-return-type": "warn",
-	  	"import/extensions": "off",
-	  	"no-underscore-dangle": [
-		  	"error",
-		  	{
-			  	"allowAfterThis": true
+		"import/extensions": "off",
+		"no-underscore-dangle": [
+			"error",
+			{
+				"allowAfterThis": true
 			}
 		],
-	  	"no-continue": "off",
+		"no-continue": "off",
 		"no-empty": [
 			"error",
 			{
