@@ -3,9 +3,14 @@ import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 const noop = (): void => {};
 
 export async function sendBinEmbed(message: Message, description: string): Promise<void> {
-	const embed = new MessageEmbed({ description, timestamp: message.createdAt })
-		.setAuthor(message.member!.displayName, message.author.displayAvatarURL({ dynamic: true }))
-		.setTimestamp(message.createdAt);
+	const embed = new MessageEmbed({
+		description,
+		timestamp: message.createdAt,
+		author: {
+			name: message.member!.displayName,
+			iconURL: message.author.displayAvatarURL({ dynamic: true }),
+		},
+	});
 
 	const botMessage = await message.channel.send(embed).catch(noop);
 	if (!botMessage) {
@@ -27,9 +32,6 @@ export async function sendBinEmbed(message: Message, description: string): Promi
 	}
 	if (reaction.partial) {
 		await reaction.fetch();
-	}
-	if (reaction.message.partial) {
-		await reaction.message.fetch();
 	}
 
 	await botMessage.delete();

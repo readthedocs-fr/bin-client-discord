@@ -1,10 +1,8 @@
 dependencies:
   discord.js: 12.5.1
-  marked: 1.2.5
   node-fetch: 2.6.1
   source-map-support: 0.5.19
 devDependencies:
-  '@types/marked': 1.2.1
   '@types/node': 14.14.13
   '@types/node-fetch': 2.5.7
   '@typescript-eslint/eslint-plugin': 4.8.2_6341bfd4e6c74608cac2d9a1d059520a
@@ -18,8 +16,10 @@ devDependencies:
   eslint-plugin-prettier: 3.1.4_eslint@7.14.0+prettier@2.2.0
   eslint-plugin-simple-import-sort: 6.0.1_eslint@7.14.0
   nodemon: 2.0.6
+  pegjs: 0.10.0
   prettier: 2.2.0
   ts-node: 9.1.1_typescript@4.1.2
+  ts-pegjs: 0.2.7
   typescript: 4.1.2
 lockfileVersion: 5.2
 packages:
@@ -118,10 +118,6 @@ packages:
     dev: true
     resolution:
       integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
-  /@types/marked/1.2.1:
-    dev: true
-    resolution:
-      integrity: sha512-d5adCgRHB+NAme23hkiTkvpfZUDqoNtL2Sr2nZBJqSj3zyHLxsfFWsGQ2sK2z9aX6L1xkJzon2c0jTPcsEjpaQ==
   /@types/node-fetch/2.5.7:
     dependencies:
       '@types/node': 14.14.10
@@ -1642,13 +1638,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==
-  /marked/1.2.5:
-    dev: false
-    engines:
-      node: '>= 8.16.2'
-    hasBin: true
-    resolution:
-      integrity: sha512-2AlqgYnVPOc9WDyWu7S5DJaEZsfk6dNh/neatQ3IHUW4QLutM/VPSH9lG7bif+XjFWc9K9XR3QvR+fXuECmfdA==
   /merge2/1.4.1:
     dev: true
     engines:
@@ -1921,6 +1910,13 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
+  /pegjs/0.10.0:
+    dev: true
+    engines:
+      node: '>=0.10'
+    hasBin: true
+    resolution:
+      integrity: sha1-z4uvrm7d/0tafvsYUmnqr0YQ3b0=
   /picomatch/2.2.2:
     dev: true
     engines:
@@ -2356,6 +2352,13 @@ packages:
       typescript: '>=2.7'
     resolution:
       integrity: sha512-hPlt7ZACERQGf03M253ytLY3dHbGNGrAq9qIHWUY9XHYl1z7wYngSr3OQ5xmui8o2AaxsONxIzjafLUiWBo1Fg==
+  /ts-pegjs/0.2.7:
+    dependencies:
+      pegjs: 0.10.0
+    dev: true
+    hasBin: true
+    resolution:
+      integrity: sha512-pB+lqVyPWEUDy8w4E53Yu8V6w20No75J6lHUD+sFzogGW/Qn/QtkdR+vYYfMVEsDpz7LEKUOU5Rqf6dgVA3qsQ==
   /tsconfig-paths/3.9.0:
     dependencies:
       '@types/json5': 0.0.29
@@ -2567,7 +2570,6 @@ packages:
     resolution:
       integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 specifiers:
-  '@types/marked': ^1.2.1
   '@types/node': ^14.14.13
   '@types/node-fetch': ^2.5.7
   '@typescript-eslint/eslint-plugin': ^4.8.2
@@ -2581,10 +2583,11 @@ specifiers:
   eslint-plugin-json: ^2.1.2
   eslint-plugin-prettier: ^3.1.4
   eslint-plugin-simple-import-sort: ^6.0.1
-  marked: ^1.2.5
   node-fetch: ^2.6.1
   nodemon: ^2.0.6
+  pegjs: ^0.10.0
   prettier: ^2.2.0
   source-map-support: ^0.5.19
   ts-node: ^9.1.1
+  ts-pegjs: ^0.2.7
   typescript: ^4.1.2

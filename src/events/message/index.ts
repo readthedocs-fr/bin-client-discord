@@ -46,9 +46,11 @@ export default class MessageEvent extends Event {
 
 			const blocks = await blockMatcher(message.content);
 
-			const content = `${await blocksToBins(message.content, blocks)} ${
-				bin instanceof Error ? bin.message : bin
-			}`.trimStart();
+			if (blocks.length === 0) {
+				return;
+			}
+
+			const content = `${await blocksToBins(blocks)} ${bin instanceof Error ? bin.message : bin}`.trimStart();
 
 			await sendBinEmbed(message, content);
 			return;
@@ -56,8 +58,8 @@ export default class MessageEvent extends Event {
 
 		const blocks = await blockMatcher(message.content);
 
-		if (blocks.size > 0) {
-			const content = await blocksToBins(message.content, blocks);
+		if (blocks.length > 0) {
+			const content = await blocksToBins(blocks);
 
 			if (message.content === content) {
 				return;

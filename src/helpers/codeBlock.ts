@@ -1,43 +1,75 @@
-import { lexer as markdown } from "marked";
-
+import { parse } from "./contentLexer";
 import { createBin } from "./createBin";
 
-export async function blockMatcher(content: string): Promise<Map<string, { language?: string; code: string }>> {
-	const matches = markdown(content);
-	const blocks = new Map<string, { language?: string; code: string }>();
+const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 
-	if (!matches) {
-		return blocks;
-	}
+interface TextNode {
+	type: "text";
+	content: string;
+}
+interface CodeNode {
+	type: "code";
+	content: string;
+	lang: string;
+	raw: string;
+	inline: boolean;
+	isBig?: boolean;
+}
+interface BlankNode {
+	type: "blank";
+}
+type Parsed = Array<CodeNode | TextNode | BlankNode>;
 
-	const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
-
-	for (const block of matches) {
-		if (!("lang" in block)) {
-			continue;
+export function blockMatcher(content: string): Parsed {
+	try {
+		const matches: Parsed = parse(content);
+		let containsBigCode = false;
+		for (let i = 0; i < matches.length; i++) {
+			const node = matches[i];
+			if (node.type !== "code") {
+				continue;
+			}
+			node.isBig = node.content.split("\n", MAX_LINES).length === MAX_LINES;
+			if (node.isBig) {
+				containsBigCode = true;
+			}
+			matches[i] = node;
 		}
-
-		const { lang: language, text: code } = block;
-		const raw = block.raw.trim();
-
-		if (code.split("\n", MAX_LINES).length === MAX_LINES && !blocks.has(raw)) {
-			blocks.set(raw, { language, code });
-		}
+		return containsBigCode ? matches : [];
+	} catch (e) {
+		// TODO: better error handling ?
+		return [];
 	}
-
-	return blocks;
 }
 
-export async function blocksToBins(
-	content: string,
-	blocks: Map<string, { language?: string; code: string }>,
-): Promise<string> {
-	let result = content;
+export async function blocksToBins(nodes: Parsed): Promise<string> {
+	const { result } = await nodes.reduce(async (acc, curr) => {
+		const accum = await acc;
+		if (curr.type !== "code") {
+			return {
+				codes: accum.codes,
+				result: accum.result + (curr.type === "text" ? curr.content : "\n"),
+			};
+		}
 
-	for (const [blockString, binInfos] of blocks.entries()) {
-		const bin = await createBin(binInfos.code, binInfos.language);
-		result = result.replaceAll(blockString, bin instanceof Error ? bin.message : bin);
-	}
+		if (curr.isBig) {
+			const isExists = accum.codes.has(curr.raw);
+			let code: string | undefined = isExists ? accum.codes.get(curr.raw) : undefined;
+			if (!isExists) {
+				const bin = await createBin(curr.content, curr.lang);
+				accum.codes.set(curr.raw, (code = bin instanceof Error ? bin.message : bin));
+			}
+			return {
+				codes: accum.codes,
+				result: `${accum.result + code}\n`,
+			};
+		}
 
-	return result;
+		return {
+			codes: accum.codes,
+			result: accum.result + curr.raw,
+		};
+	}, Promise.resolve({ codes: new Map<string, string>(), result: "" }));
+
+	return result.trimEnd();
 }

@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "tsc",
+		"pegjs": "pegjs --plugin ts-pegjs -o ./src/helpers/contentLexer.ts --cache ./src/helpers/contentLexer.pegjs",
 		"start": "node -r source-map-support/register -r dotenv/config .",
 		"dev": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"ts-node -r dotenv/config src/index.ts\"",
 		"lint": "eslint src --ext ts",
@@ -16,12 +17,10 @@
 	},
 	"dependencies": {
 		"discord.js": "^12.5.1",
-		"marked": "^1.2.5",
 		"node-fetch": "^2.6.1",
 		"source-map-support": "^0.5.19"
 	},
 	"devDependencies": {
-		"@types/marked": "^1.2.1",
 		"@types/node": "^14.14.13",
 		"@types/node-fetch": "^2.5.7",
 		"@typescript-eslint/eslint-plugin": "^4.8.2",
@@ -35,8 +34,10 @@
 		"eslint-plugin-prettier": "^3.1.4",
 		"eslint-plugin-simple-import-sort": "^6.0.1",
 		"nodemon": "^2.0.6",
+		"pegjs": "^0.10.0",
 		"prettier": "^2.2.0",
 		"ts-node": "^9.1.1",
+		"ts-pegjs": "^0.2.7",
 		"typescript": "^4.1.2"
 	}
 }
