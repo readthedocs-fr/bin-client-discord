@@ -8,7 +8,8 @@
 		"start": "node -r source-map-support/register -r dotenv/config .",
 		"dev": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"ts-node -r dotenv/config src/index.ts\"",
 		"lint": "eslint src --ext ts",
-		"format": "npm run lint -- --fix"
+		"lint-fix": "npm run lint -- --fix",
+		"format": "prettier --write src"
 	},
 	"author": "Aakodal",
 	"license": "ISC",
