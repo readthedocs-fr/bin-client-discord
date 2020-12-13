@@ -8,6 +8,7 @@ interface TextNode {
 	content: string;
 }
 
+
 interface CodeNode {
 	type: "code";
 	content: string;
@@ -17,9 +18,11 @@ interface CodeNode {
 	isBig?: boolean;
 }
 
+
 interface BlankNode {
 	type: "blank";
 }
+
 
 type Parsed = Array<CodeNode | TextNode | BlankNode>;
 
