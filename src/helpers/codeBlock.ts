@@ -53,9 +53,9 @@ export async function blocksToBins(nodes: Parsed): Promise<string> {
 		}
 
 		if (curr.isBig) {
-			const isExists = accum.codes.has(curr.raw);
-			let code: string | undefined = isExists ? accum.codes.get(curr.raw) : undefined;
-			if (!isExists) {
+			const doesExist = accum.codes.has(curr.raw);
+			let code: string | undefined = doesExist ? accum.codes.get(curr.raw) : undefined;
+			if (!doesExist) {
 				const bin = await createBin(curr.content, curr.lang);
 				accum.codes.set(curr.raw, (code = bin instanceof Error ? bin.message : bin));
 			}

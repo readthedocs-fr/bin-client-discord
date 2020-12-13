@@ -44,7 +44,7 @@ export default class MessageEvent extends Event {
 
 			const bin = await createBin(code, language);
 
-			const blocks = await blockMatcher(message.content);
+			const blocks = blockMatcher(message.content);
 
 			if (blocks.length === 0) {
 				return;
@@ -56,7 +56,7 @@ export default class MessageEvent extends Event {
 			return;
 		}
 
-		const blocks = await blockMatcher(message.content);
+		const blocks = blockMatcher(message.content);
 
 		if (blocks.length > 0) {
 			const content = await blocksToBins(blocks);
