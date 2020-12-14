@@ -2,6 +2,7 @@
 	"name": "readthebin",
 	"version": "1.0.0",
 	"private": true,
+	"main": "build/index.js",
 	"scripts": {
 		"build": "tsc",
 		"pegjs": "pegjs --plugin ts-pegjs --extra-options-file pegconfig.json -o ./src/helpers/contentLexer.ts --cache ./src/helpers/contentLexer.pegjs",
