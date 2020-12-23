@@ -11,6 +11,7 @@ const rules: Record<string, { regex: RegExp; matcher: (match: string[], lastInde
 			if (!content?.trim()) {
 				return;
 			}
+
 			return {
 				raw,
 				lang: lang?.trim(),
@@ -26,6 +27,7 @@ const rules: Record<string, { regex: RegExp; matcher: (match: string[], lastInde
 			if (!content?.trim()) {
 				return;
 			}
+
 			return {
 				raw,
 				content,
@@ -41,6 +43,7 @@ function match(source: string): any {
 		if (!ruleMatch) {
 			continue;
 		}
+
 		const result = rule.matcher(ruleMatch, rule.regex.lastIndex);
 		rule.regex.lastIndex = 0;
 		if (result) {
@@ -58,6 +61,7 @@ export async function processContent(source: string): Promise<string | undefined
 	if (!source.trim()) {
 		return;
 	}
+
 	const codes = new Map<string, string>();
 	let final = source;
 
@@ -69,30 +73,41 @@ export async function processContent(source: string): Promise<string | undefined
 
 		if (char === ESCAPE) {
 			escaped = !escaped;
-		} else if (char === BACK_TICK) {
+			continue;
+		}
+
+		if (char === BACK_TICK) {
 			const matches = match(`${escaped ? ESCAPE : ""}${final.substring(i)}`);
 			if (!matches) {
 				continue;
 			}
+
 			const { result } = matches;
 			const start = i - 1;
 			const lines = result.content.split("\n", MAX_LINES).length;
+
 			if (lines < MAX_LINES) {
 				continue;
 			}
+
 			changed = true;
 			let bin = codes.get(result.content.trim());
+
 			if (!bin) {
 				bin = await createBin(result.content, result.lang)
 					.then((url) => `<${url}>`)
 					.catch((e: Error) => e.message);
 				codes.set(result.content.trim(), bin);
 			}
+
 			final = replaceAt(final, bin, start, i + result.end);
 			i += bin.length - 1;
-		} else {
-			escaped = false;
+
+			continue;
 		}
+
+		escaped = false;
 	}
+
 	return changed ? final : undefined;
 }
