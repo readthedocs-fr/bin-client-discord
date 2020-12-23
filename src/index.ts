@@ -8,6 +8,6 @@ const client = new Client({
 });
 
 client.init().catch((error) => {
-	console.log(`[${new Date().toLocaleString()}]`, error);
+	console.error(`[${new Date().toLocaleString()}]`, error);
 	process.exit(1);
 });

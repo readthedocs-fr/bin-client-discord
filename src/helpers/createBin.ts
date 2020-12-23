@@ -3,15 +3,15 @@ import { encode } from "querystring";
 
 const TOKEN_REGEXP = /[a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[\w-]{27}|mfa\.[\w-]{84}/g;
 
-function checkStatus(res: Response): Response {
+function checkStatus(res: Response): string {
 	if (res.ok) {
-		return res;
+		return res.url;
 	}
 
 	throw new Error(`[Error ${res.status}: ${res.statusText}]`);
 }
 
-export async function createBin(code: string, language = "txt"): Promise<string | Error> {
+export async function createBin(code: string, language = "txt"): Promise<string> {
 	const body = encode({
 		code: code.replace(TOKEN_REGEXP, "[DISCORD TOKEN DETECTED]"),
 		lang: language,
@@ -24,8 +24,5 @@ export async function createBin(code: string, language = "txt"): Promise<string 
 		headers: {
 			"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
 		},
-	})
-		.then(checkStatus)
-		.then((res) => res.url)
-		.catch((err: Error) => err);
+	}).then(checkStatus);
 }

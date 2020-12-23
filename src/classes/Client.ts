@@ -6,7 +6,7 @@ import { capitalize, formatDate, isCurrentEnvValid } from "../helpers";
 import { Command, Event } from ".";
 
 const noop = (): void => {};
-class Client extends DiscordClient {
+export class Client extends DiscordClient {
 	public commands = new Map<string, Command>();
 
 	public aliases = new Map<string, Command>();
@@ -48,7 +48,7 @@ class Client extends DiscordClient {
 			}
 		}
 
-		await this.login(process.env.TOKEN);
+		await this.login(process.env.DISCORD_TOKEN);
 		await this.user?.setActivity({
 			name: "code snippets",
 			type: "LISTENING",
@@ -102,5 +102,3 @@ class Client extends DiscordClient {
 		console.info(`Event ${name} (${event.event}) loaded.`);
 	}
 }
-
-export { Client };

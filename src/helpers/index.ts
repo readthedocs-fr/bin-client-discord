@@ -1,5 +1,5 @@
 export * from "./capitalize";
-export * from "./codeBlock";
+export * from "./contentProcessing";
 export * from "./createBin";
 export * from "./formatDate";
 export * from "./isCurrentEnvValid";

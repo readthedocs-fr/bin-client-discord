@@ -2,10 +2,17 @@ import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 
 const noop = (): void => {};
 
-export async function sendBinEmbed(message: Message, description: string): Promise<void> {
-	const embed = new MessageEmbed({ description, timestamp: message.createdAt })
+export async function sendBinEmbed(
+	message: Message,
+	description: string,
+	extender?: (embed: MessageEmbed) => MessageEmbed,
+): Promise<void> {
+	const embed = new MessageEmbed({ description })
 		.setAuthor(message.member!.displayName, message.author.displayAvatarURL({ dynamic: true }))
 		.setTimestamp(message.createdAt);
+	if (extender) {
+		extender(embed);
+	}
 
 	const botMessage = await message.channel.send(embed).catch(noop);
 	if (!botMessage) {
