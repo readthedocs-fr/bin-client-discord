@@ -20,7 +20,7 @@ const rules: Record<string, { regex: RegExp; matcher: (match: string[], lastInde
 		},
 	},
 	inlineCode: {
-		regex: /^``([^\n].*?)\n*``|`([^\n].*?)\n*`|`([^`]*?)`/sy,
+		regex: /^(?:``([^\n].*?)\n*``|`([^`]*?)`)/sy,
 		matcher([raw, content1, content2]: (string | undefined)[], end: number): any {
 			const content = content1 ?? content2;
 			if (!content?.trim()) {
@@ -69,8 +69,8 @@ export async function processContent(source: string): Promise<string | undefined
 
 		if (char === ESCAPE) {
 			escaped = !escaped;
-		} else if (char === BACK_TICK && !escaped) {
-			const matches = match(final.substring(i));
+		} else if (char === BACK_TICK) {
+			const matches = match(`${escaped ? ESCAPE : ""}${final.substring(i)}`);
 			if (!matches) {
 				continue;
 			}
@@ -83,10 +83,11 @@ export async function processContent(source: string): Promise<string | undefined
 			changed = true;
 			let bin = codes.get(result.content.trim());
 			if (!bin) {
-				bin = await createBin(result.content, result.lang).catch((e: Error) => e.message);
+				bin = await createBin(result.content, result.lang)
+					.then((url) => `<${url}>`)
+					.catch((e: Error) => e.message);
 				codes.set(result.content.trim(), bin);
 			}
-
 			final = replaceAt(final, bin, start, i + result.end);
 			i += bin.length - 1;
 		} else {
