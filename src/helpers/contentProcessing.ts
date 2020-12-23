@@ -108,7 +108,7 @@ export async function processContent(source: string, MAX_LINES: number): Promise
 			if (!bin) {
 				const link = await createBin(result.content, result.lang)
 					.then((url) => (ext = "txt"): string =>
-						`<${url.slice(0, url.endsWith("txt") || !result.lang ? -3 : -result.lang.length)}${ext}>`,
+						`<${url.slice(0, url.endsWith("txt") ? -3 : -result.lang!.length)}${ext}>`,
 					)
 					.catch((e: Error) => (): string => e.message);
 				bin = link(result.lang);
