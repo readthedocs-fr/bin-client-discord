@@ -9,7 +9,7 @@
 		"dev": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"ts-node -r dotenv/config src/index.ts\"",
 		"lint": "eslint src --ext ts",
 		"format": "npm run lint -- --fix",
-		"test": "jest --detectOpenHandles --forceExit"
+		"test": "jest --detectOpenHandles"
 	},
 	"author": "Aakodal",
 	"license": "ISC",

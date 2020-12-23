@@ -1,6 +1,6 @@
 import { Client } from "../src/classes";
 
-test("client.init() throws error if the env variables is not valid", async () => {
+test("client.init() throws error if the env variables is not valid", () => {
 	const client = new Client();
 	expect(client.init()).rejects.toThrow("Current environment is invalid.");
 });
