@@ -57,10 +57,7 @@ function parser(message: string): { raw: string; lang: string; code: string }[] 
 			) {
 				const text = content.split("\n");
 
-				const lang =
-					text[1] && backtickNumber === 2 && text[0].split(" ").length === 1 && extensions.has(text[0])
-						? text[0]
-						: "";
+				const lang = text[1] && backtickNumber === 2 && text[0].trim().split(" ").length === 1 ? text[0] : "";
 				const code = (lang ? text.slice(1).join("\n") : text.join("\n")).trim();
 
 				const backticks = "`".repeat(backtickNumber + 1);
