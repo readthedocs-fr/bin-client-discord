@@ -45,7 +45,7 @@ export default class MessageEvent extends Event {
 			}
 
 			const content = await createBin(code, language).catch((e: Error) => e.message);
-			const processed = await processContent(message.content);
+			const processed = await processContent(message.content, MAX_LINES);
 
 			if (processed) {
 				sendBinEmbed(message, processed, (embed) => embed.addField("📁 Attachement", content));
@@ -60,7 +60,7 @@ export default class MessageEvent extends Event {
 			return;
 		}
 
-		const processed = await processContent(message.content);
+		const processed = await processContent(message.content, MAX_LINES);
 		if (processed) {
 			sendBinEmbed(message, processed);
 		}

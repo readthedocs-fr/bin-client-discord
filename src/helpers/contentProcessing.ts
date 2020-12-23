@@ -2,7 +2,6 @@ import { createBin } from ".";
 
 const BACK_TICK = "`";
 const ESCAPE = "\\";
-const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 
 interface CodeToken {
 	raw: string;
@@ -69,12 +68,12 @@ function replaceAt(source: string, replacement: string, start: number, end: numb
 	return source.substring(0, start + 1) + replacement + source.substring(end, source.length);
 }
 
-export async function processContent(source: string): Promise<string | undefined> {
+export async function processContent(source: string, MAX_LINES: number): Promise<string | undefined> {
 	if (!source.trim()) {
 		return;
 	}
 
-	const codes = new Map<string, string>();
+	const codes = new Map<string, (ext?: string) => string>();
 	let final = source;
 
 	let escaped = false;
@@ -98,20 +97,24 @@ export async function processContent(source: string): Promise<string | undefined
 
 			const start = i - 1;
 			const lines = result.content.split("\n", MAX_LINES).length;
-
 			if (lines < MAX_LINES) {
 				i += result.end - 1;
 				continue;
 			}
 
 			changed = true;
-			let bin = codes.get(result.content.trim());
+			let bin = codes.get(result.content.trim())?.(result.lang);
 
 			if (!bin) {
-				bin = await createBin(result.content, result.lang)
-					.then((url) => `<${url}>`)
-					.catch((e: Error) => e.message);
-				codes.set(result.content.trim(), bin);
+				console.log(result.lang, (result.lang ?? "txt").length);
+				const link = await createBin(result.content, result.lang)
+					.then((url) => (ext = "txt"): string =>
+						`<${url.slice(0, url.endsWith("txt") || !result.lang ? -3 : -result.lang.length)}${ext}>`,
+					)
+					.catch((e: Error) => (): string => e.message);
+				bin = link(result.lang);
+				console.log(bin);
+				codes.set(result.content.trim(), link);
 			}
 
 			final = replaceAt(final, bin, start, i + result.end);
