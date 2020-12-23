@@ -1,4 +1,3 @@
-import { extensions } from "../misc/extensions";
 import { createBin } from ".";
 
 function parser(message: string): { raw: string; lang: string; code: string }[] {
@@ -59,7 +58,7 @@ function parser(message: string): { raw: string; lang: string; code: string }[] 
 
 				const lang =
 					text[1] && backtickNumber === 2 && text[0].trim().split(" ").length === 1 ? text[0].trim() : "";
-				const code = (lang ? text.slice(1).join("\n").trim() : text.join("\n")).trim();
+				const code = lang ? text.slice(1).join("\n") : text.join("\n");
 
 				const backticks = "`".repeat(backtickNumber + 1);
 
