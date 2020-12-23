@@ -57,6 +57,7 @@ function match(source: string): { name: string; result: CodeToken } | undefined 
 		}
 
 		const result = rule.matcher(ruleMatch, rule.regex.lastIndex);
+
 		rule.regex.lastIndex = 0;
 		if (result) {
 			return { name, result };
@@ -94,10 +95,12 @@ export async function processContent(source: string): Promise<string | undefined
 			}
 
 			const { result } = matches;
+
 			const start = i - 1;
 			const lines = result.content.split("\n", MAX_LINES).length;
 
 			if (lines < MAX_LINES) {
+				i += result.end - 1;
 				continue;
 			}
 
