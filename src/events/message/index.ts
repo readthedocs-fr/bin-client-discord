@@ -59,6 +59,7 @@ export default class MessageEvent extends Event {
 		if (lines < MAX_LINES) {
 			return;
 		}
+
 		const processed = await processContent(message.content);
 		if (processed) {
 			sendBinEmbed(message, processed);
