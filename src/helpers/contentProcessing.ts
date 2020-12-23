@@ -4,10 +4,22 @@ const BACK_TICK = "`";
 const ESCAPE = "\\";
 const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 
-const rules: Record<string, { regex: RegExp; matcher: (match: string[], lastIndex: number) => any }> = {
+interface CodeToken {
+	raw: string;
+	content: string;
+	end: number;
+	lang?: string;
+}
+
+interface Rule {
+	regex: RegExp;
+	matcher(match: (string | undefined)[], lastIndex: number): CodeToken | undefined;
+}
+
+const rules: Record<string, Rule> = {
 	codeBlock: {
 		regex: /^```(?:([\w+\-.]+?)?(?:\s*\n))?([^\n].*?)\n*```/sy,
-		matcher([raw, lang, content]: (string | undefined)[], end: number): any {
+		matcher([raw, lang, content]: string[], end: number): CodeToken | undefined {
 			if (!content?.trim()) {
 				return;
 			}
@@ -21,7 +33,7 @@ const rules: Record<string, { regex: RegExp; matcher: (match: string[], lastInde
 	},
 	inlineCode: {
 		regex: /^(?:``([^\n].*?)\n*``|`([^`]*?)`)/sy,
-		matcher([raw, content1, content2]: (string | undefined)[], end: number): any {
+		matcher([raw, content1, content2]: string[], end: number): CodeToken | undefined {
 			const content = content1 ?? content2;
 			if (!content?.trim()) {
 				return;
@@ -35,7 +47,7 @@ const rules: Record<string, { regex: RegExp; matcher: (match: string[], lastInde
 	},
 };
 
-function match(source: string): any {
+function match(source: string): { name: string; result: CodeToken } | undefined {
 	for (const [name, rule] of Object.entries(rules)) {
 		const ruleMatch = source.match(rule.regex);
 		if (!ruleMatch) {
@@ -47,7 +59,6 @@ function match(source: string): any {
 			return { name, result };
 		}
 	}
-	return undefined;
 }
 
 function replaceAt(source: string, replacement: string, start: number, end: number): string {
