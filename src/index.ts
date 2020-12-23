@@ -1,4 +1,4 @@
-import { Client } from "./classes/Client";
+import { Client } from "./classes";
 
 const client = new Client({
 	partials: ["USER", "GUILD_MEMBER"],
@@ -7,4 +7,7 @@ const client = new Client({
 	},
 });
 
-client.init();
+client.init().catch((error) => {
+	console.log(`[${new Date().toLocaleString()}]`, error);
+	process.exit(1);
+});

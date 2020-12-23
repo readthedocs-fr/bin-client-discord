@@ -1,9 +1,15 @@
-import fetch from "node-fetch";
+import fetch, { Response } from "node-fetch";
 import { encode } from "querystring";
 
-import { checkStatus } from "./checkStatus";
-
 const TOKEN_REGEXP = /[a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[\w-]{27}|mfa\.[\w-]{84}/g;
+
+function checkStatus(res: Response): Response {
+	if (res.ok) {
+		return res;
+	}
+
+	throw new Error(`[Error ${res.status}: ${res.statusText}]`);
+}
 
 export async function createBin(code: string, language = "txt"): Promise<string | Error> {
 	const body = encode({
