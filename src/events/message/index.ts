@@ -44,10 +44,8 @@ export default class MessageEvent extends Event {
 				return;
 			}
 
-			const bin = await createBin(code, language);
-
+			const content = await createBin(code, language).catch((e: Error) => e.message);
 			const processed = await processContent(message.content);
-			const content = bin instanceof Error ? bin.message : bin;
 
 			if (processed) {
 				sendBinEmbed(message, processed, (embed) => embed.addField("📁 Attachement", content));

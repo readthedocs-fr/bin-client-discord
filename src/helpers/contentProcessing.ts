@@ -80,17 +80,15 @@ export async function processContent(source: string): Promise<string | undefined
 			if (lines < MAX_LINES) {
 				continue;
 			}
-			console.log(result);
 			changed = true;
-			let link = codes.get(result.content.trim());
-			if (!link) {
-				const bin = await createBin(result.content, result.lang);
-				link = bin instanceof Error ? bin.message : bin.trim();
-				codes.set(result.content.trim(), link);
+			let bin = codes.get(result.content.trim());
+			if (!bin) {
+				bin = await createBin(result.content, result.lang).catch((e: Error) => e.message);
+				codes.set(result.content.trim(), bin);
 			}
 
-			final = replaceAt(final, link, start, i + result.end);
-			i += link.length - 1;
+			final = replaceAt(final, bin, start, i + result.end);
+			i += bin.length - 1;
 		} else {
 			escaped = false;
 		}

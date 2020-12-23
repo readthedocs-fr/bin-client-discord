@@ -11,7 +11,7 @@ function checkStatus(res: Response): string {
 	throw new Error(`[Error ${res.status}: ${res.statusText}]`);
 }
 
-export async function createBin(code: string, language = "txt"): Promise<string | Error> {
+export async function createBin(code: string, language = "txt"): Promise<string> {
 	const body = encode({
 		code: code.replace(TOKEN_REGEXP, "[DISCORD TOKEN DETECTED]"),
 		lang: language,
