@@ -3,8 +3,10 @@ import fetch from "node-fetch";
 import { extname } from "path";
 
 import { Client, Event } from "../../classes";
-import { blockMatcher, blocksToBins, createBin, sendBinEmbed } from "../../helpers";
+import { createBin, processContent, sendBinEmbed } from "../../helpers";
 import { extensions } from "../../misc/extensions";
+
+const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 
 export default class MessageEvent extends Event {
 	constructor(client: Client) {
@@ -28,42 +30,40 @@ export default class MessageEvent extends Event {
 				return;
 			}
 
-			const fileExtension = extname(file.name).replace(".", "");
-			const language = fileExtension === "" ? "txt" : fileExtension;
+			const fileExtension = extname(file.name).substring(1);
+			const language = fileExtension || "txt";
 			if (language !== "txt" && !extensions.has(language)) {
 				return;
 			}
 
 			const code = await fetch(file.url)
 				.then((res) => res.text())
-				.catch(() => {});
+				.catch(() => undefined);
 
-			if (!code) {
+			if (!code?.trim()) {
 				return;
 			}
 
 			const bin = await createBin(code, language);
 
-			const blocks = await blockMatcher(message.content);
+			const processed = await processContent(message.content);
+			const content = bin instanceof Error ? bin.message : bin;
 
-			const content = `${await blocksToBins(message.content, blocks)} ${
-				bin instanceof Error ? bin.message : bin
-			}`.trimStart();
-
-			await sendBinEmbed(message, content);
+			if (processed) {
+				sendBinEmbed(message, processed, (embed) => embed.addField("📁 Attachement", content));
+			} else {
+				sendBinEmbed(message, content);
+			}
 			return;
 		}
 
-		const blocks = await blockMatcher(message.content);
-
-		if (blocks.size > 0) {
-			const content = await blocksToBins(message.content, blocks);
-
-			if (message.content === content) {
-				return;
-			}
-
-			sendBinEmbed(message, content);
+		const lines = message.content.split("\n", MAX_LINES).length;
+		if (lines < MAX_LINES) {
+			return;
+		}
+		const processed = await processContent(message.content);
+		if (processed) {
+			sendBinEmbed(message, processed);
 		}
 	}
 }

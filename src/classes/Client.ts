@@ -48,7 +48,7 @@ class Client extends DiscordClient {
 			}
 		}
 
-		await this.login(process.env.TOKEN);
+		await this.login();
 		await this.user?.setActivity({
 			name: "code snippets",
 			type: "LISTENING",
