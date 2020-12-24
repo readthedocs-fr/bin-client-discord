@@ -1,6 +1,8 @@
 import fetch, { Response } from "node-fetch";
 import { encode } from "querystring";
 
+import { BinError } from "../misc/BinError";
+
 const TOKEN_REGEXP = /[a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[\w-]{27}|mfa\.[\w-]{84}/g;
 
 function checkStatus(res: Response): string {
@@ -8,7 +10,7 @@ function checkStatus(res: Response): string {
 		return res.url;
 	}
 
-	throw new Error(`[Error ${res.status}: ${res.statusText}]`);
+	throw new BinError(res.statusText, res.status);
 }
 
 export async function createBin(code: string, language = "txt"): Promise<string> {

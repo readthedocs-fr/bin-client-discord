@@ -1,4 +1,5 @@
-import { createBin } from ".";
+import { createBin, errorFormatter } from ".";
+import { BinError } from "../misc/BinError";
 
 const BACK_TICK = "`";
 const ESCAPE = "\\";
@@ -69,7 +70,9 @@ function replaceAt(source: string, replacement: string, start: number, end: numb
 	return source.substring(0, start + 1) + replacement + source.substring(end, source.length);
 }
 
-export async function processContent(source: string): Promise<string | undefined> {
+export async function processContent(
+	source: string,
+): Promise<{ processedString: string; errors: boolean } | undefined> {
 	if (!source.trim()) {
 		return;
 	}
@@ -79,6 +82,8 @@ export async function processContent(source: string): Promise<string | undefined
 
 	let escaped = false;
 	let changed = false;
+
+	let errors = false;
 
 	for (let i = 0; i < final.length; i++) {
 		const char = final[i];
@@ -110,7 +115,11 @@ export async function processContent(source: string): Promise<string | undefined
 			if (!bin) {
 				bin = await createBin(result.content, result.lang)
 					.then((url) => `<${url}>`)
-					.catch((e: Error) => e.message);
+					// eslint-disable-next-line @typescript-eslint/no-loop-func
+					.catch((e: Error) => {
+						errors = true;
+						return e instanceof BinError ? `[${errorFormatter(e)}]` : `[${e.message}]`;
+					});
 				codes.set(result.content.trim(), bin);
 			}
 
@@ -123,5 +132,5 @@ export async function processContent(source: string): Promise<string | undefined
 		escaped = false;
 	}
 
-	return changed ? final : undefined;
+	return changed ? { processedString: final, errors } : undefined;
 }
