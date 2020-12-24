@@ -1,5 +1,5 @@
-import { createBin, errorFormatter } from ".";
 import { BinError } from "../misc/BinError";
+import { createBin, errorFormatter } from ".";
 
 const BACK_TICK = "`";
 const ESCAPE = "\\";
