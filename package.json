@@ -10,7 +10,7 @@
 		"lint": "eslint src --ext ts",
 		"format": "npm run lint -- --fix"
 	},
-	"author": "Aakodal",
+	"author": "Read The Docs FR",
 	"license": "MIT",
 	"engines": {
 		"node": ">=15.0.0"
