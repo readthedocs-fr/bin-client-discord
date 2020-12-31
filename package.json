@@ -11,7 +11,7 @@
 		"format": "npm run lint -- --fix"
 	},
 	"author": "Aakodal",
-	"license": "ISC",
+	"license": "MIT",
 	"engines": {
 		"node": ">=15.0.0"
 	},
