@@ -12,7 +12,7 @@ import { Stream } from "stream";
 
 const noop = (): undefined => undefined;
 
-const MAX_FILE_SIZE = 8e6;
+const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MiB
 
 export async function sendBinEmbed(
 	message: Message,
