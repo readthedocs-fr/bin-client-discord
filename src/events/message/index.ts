@@ -47,7 +47,7 @@ export default class MessageEvent extends Event {
 
 			const processed =
 				message.content.split("\n", MAX_LINES).length === MAX_LINES
-					? await processContent(message.content)
+					? await processContent(message.content, MAX_LINES)
 					: undefined;
 
 			const content = code?.trim() ? await createBin(code, language).catch((e: Error) => e) : undefined;
@@ -86,7 +86,7 @@ export default class MessageEvent extends Event {
 			return;
 		}
 
-		const processed = await processContent(message.content).catch(noop);
+		const processed = await processContent(message.content, MAX_LINES).catch(noop);
 
 		if (processed) {
 			sendBinEmbed(

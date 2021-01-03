@@ -1,4 +1,4 @@
-const errors: Record<number, string> = {
+export const errors: Record<number, string> = {
 	400: "Erreur 400 : mauvaise requête. Contactez un développeur du bot.",
 	403: "Erreur 403 : accès interdit. Contactez l'hébergeur du service de bin.",
 	404: "Erreur 404 : site non trouvé. Il est possible qu'il soit arrêté, ou que le bot soit mal configuré.",
@@ -9,15 +9,15 @@ const errors: Record<number, string> = {
 };
 
 export class BinError extends Error {
-	public code: number;
+	public readonly code: number;
 
 	public constructor(message: string, code: number) {
-		super(message);
+		super(errors[code] || `Erreur ${code} : ${message}.`);
 		this.code = code;
 		this.name = this.constructor.name;
 	}
 
 	public toString(): string {
-		return errors[this.code] || `Erreur ${this.code} : ${this.message}.`;
+		return this.message;
 	}
 }
