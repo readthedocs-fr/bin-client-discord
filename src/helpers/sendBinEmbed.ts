@@ -1,11 +1,15 @@
-import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
+import { Message, MessageAttachment, MessageEmbed, MessageReaction, User } from "discord.js";
 
-const noop = (): void => {};
+const noop = (): undefined => undefined;
+
+const MAX_FILE_SIZE = 8e6;
 
 export async function sendBinEmbed(
 	message: Message,
 	description: string,
 	extender?: (embed: MessageEmbed) => MessageEmbed,
+	attachment?: MessageAttachment,
+): Promise<void> {
 	const embed = new MessageEmbed({ description })
 		.setAuthor(message.member!.displayName, message.author.displayAvatarURL({ dynamic: true }))
 		.setTimestamp(message.createdAt);
@@ -14,7 +18,12 @@ export async function sendBinEmbed(
 		extender(embed);
 	}
 
-	const botMessage = await message.channel.send(embed).catch(noop);
+	const waitMessage = await message.channel.send("Transformation du message en cours...").catch(noop);
+	const files = attachment && attachment.size <= MAX_FILE_SIZE ? [attachment.attachment] : [];
+	const botMessage = await message.channel.send({ embed, files }).catch(noop);
+
+	await waitMessage?.delete().catch(noop);
+
 	if (!botMessage) {
 		return;
 	}
@@ -39,5 +48,5 @@ export async function sendBinEmbed(
 		await reaction.message.fetch();
 	}
 
-	await botMessage.delete();
+	await botMessage.delete().catch(noop);
 }

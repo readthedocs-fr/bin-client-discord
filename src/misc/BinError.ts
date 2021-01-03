@@ -15,8 +15,8 @@ export class BinError extends Error {
 		this.code = code;
 		this.name = this.constructor.name;
 	}
-	
-	public toString() {
+
+	public toString(): string {
 		return errors[this.code] || `Erreur ${this.code} : ${this.message}.`;
 	}
 }

@@ -1,4 +1,3 @@
-import { BinError } from "../misc/BinError";
 import { createBin } from ".";
 
 const BACK_TICK = "`";
@@ -113,9 +112,10 @@ export async function processContent(source: string): Promise<string | undefined
 			if (!bin) {
 				bin = await createBin(result.content, result.lang)
 					.then((url) => `<${url}>`)
+					// eslint-disable-next-line @typescript-eslint/no-loop-func
 					.catch((e: Error) => {
-						errors++
-						return `[${e}]`
+						errors++;
+						return `[${e}]`;
 					});
 				codes.set(result.content.trim(), bin);
 			}
@@ -129,5 +129,5 @@ export async function processContent(source: string): Promise<string | undefined
 		escaped = false;
 	}
 
-	return codes.size > errors ? final : undefined;
+	return codes.size > errors && changed ? final : undefined;
 }
