@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import { extname } from "path";
 
 import { Client, Event } from "../../classes";
-import { createBin, errorFormatter, processContent, sendBinEmbed } from "../../helpers";
+import { createBin, processContent, sendBinEmbed } from "../../helpers";
 import { BinError } from "../../misc/BinError";
 import { extensions } from "../../misc/extensions";
 
@@ -43,23 +43,16 @@ export default class MessageEvent extends Event {
 				.then((res) => res.text())
 				.catch(() => undefined);
 
-			const processed = await processContent(message.content);
-			const content = code ? await createBin(code, language).catch((e: Error) => e) : undefined;
+			const processed = message.content.split("\n", MAX_LINES) === MAX_LINES ? await processContent(message.content) : undefined;
+			const content = code.trim() ? await createBin(code, language).catch((e: Error) => e) : undefined;
 
 			if (!content && !processed) {
 				return;
 			}
 
 			if (content instanceof Error) {
-				const error =
-					content instanceof BinError
-						? errorFormatter(content)
-						: `Une erreur imprévue est survenue : ${content.message}`;
-
 				// eslint-disable-next-line max-len
-				const botMessage = `${error}\n\nCependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent). Nous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${
-					process.env.BIN_URL!.split("/new")[0]
-				}`;
+				const botMessage = `${content}\n\nCependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent). Nous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${process.env.BIN_URL!.slice(0, -4)}`;
 
 				await message.channel.send(botMessage);
 
@@ -69,11 +62,10 @@ export default class MessageEvent extends Event {
 			if (processed) {
 				await sendBinEmbed(
 					message,
-					processed.processedString,
-					processed.errors,
+					processed,
 					content ? (embed): MessageEmbed => embed.addField("📁 Pièce jointe", content) : undefined,
 				);
-			} else if (content) {
+			} else {
 				await sendBinEmbed(message, content);
 			}
 
@@ -89,7 +81,7 @@ export default class MessageEvent extends Event {
 		const processed = await processContent(message.content);
 
 		if (processed) {
-			await sendBinEmbed(message, processed.processedString, processed.errors);
+			sendBinEmbed(message, processed);
 		}
 	}
 }

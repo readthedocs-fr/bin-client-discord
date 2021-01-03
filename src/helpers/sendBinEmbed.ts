@@ -5,9 +5,7 @@ const noop = (): void => {};
 export async function sendBinEmbed(
 	message: Message,
 	description: string,
-	errors = false,
 	extender?: (embed: MessageEmbed) => MessageEmbed,
-): Promise<void> {
 	const embed = new MessageEmbed({ description })
 		.setAuthor(message.member!.displayName, message.author.displayAvatarURL({ dynamic: true }))
 		.setTimestamp(message.createdAt);
@@ -21,9 +19,7 @@ export async function sendBinEmbed(
 		return;
 	}
 
-	if (!errors) {
-		await message.delete().catch(noop);
-	}
+	await message.delete().catch(noop);
 
 	await botMessage.react("🗑️");
 
