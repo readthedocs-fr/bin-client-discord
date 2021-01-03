@@ -1,4 +1,6 @@
-import { createBin } from ".";
+import { BinError } from "../misc/BinError";
+import { createBin } from "./createBin";
+import { logError } from "./logError";
 
 const BACK_TICK = "`";
 const ESCAPE = "\\";
@@ -80,6 +82,8 @@ export async function processContent(source: string): Promise<string | undefined
 	let escaped = false;
 	let changed = false;
 
+	let errors = 0;
+
 	for (let i = 0; i < final.length; i++) {
 		const char = final[i];
 
@@ -110,7 +114,15 @@ export async function processContent(source: string): Promise<string | undefined
 			if (!bin) {
 				bin = await createBin(result.content, result.lang)
 					.then((url) => `<${url}>`)
-					.catch((e: Error) => e.message);
+					// eslint-disable-next-line @typescript-eslint/no-loop-func
+					.catch((e: Error) => {
+						errors++;
+						// log if the error is critical.
+						if (e instanceof BinError ? [400, 403, 404, 405].includes(e.code) : true) {
+							logError(e);
+						}
+						return `[${e}]`;
+					});
 				codes.set(result.content.trim(), bin);
 			}
 
@@ -123,5 +135,5 @@ export async function processContent(source: string): Promise<string | undefined
 		escaped = false;
 	}
 
-	return changed ? final : undefined;
+	return codes.size > errors && changed ? final : undefined;
 }

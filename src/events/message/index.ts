@@ -1,4 +1,4 @@
-import { GuildChannel, Message } from "discord.js";
+import { GuildChannel, Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { extname } from "path";
 
@@ -8,13 +8,16 @@ import { extensions } from "../../misc/extensions";
 
 const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 
+const noop = (): undefined => undefined;
+
 export default class MessageEvent extends Event {
-	constructor(client: Client) {
+	public constructor(client: Client) {
 		super("message", client);
 	}
 
-	async listener(message: Message): Promise<void> {
+	public async listener(message: Message): Promise<void> {
 		const categories = process.env.CATEGORIES!.split(",");
+
 		if (
 			!(message.channel instanceof GuildChannel) ||
 			message.author.bot ||
@@ -23,46 +26,75 @@ export default class MessageEvent extends Event {
 			return;
 		}
 
-		if (message.attachments.size > 0) {
-			const file = message.attachments.first(); // only take first attachment as, normally, users cannot send more than one attachment
-
-			if (!file?.name || file?.width) {
-				return;
+		const file = message.attachments.find((attachment) => {
+			if (!attachment.name || attachment.name === "" || attachment.width) {
+				return false;
 			}
 
-			const fileExtension = extname(file.name).substring(1);
+			const fileExtension = extname(attachment.name).substring(1);
 			const language = fileExtension || "txt";
-			if (language !== "txt" && !extensions.has(language)) {
-				return;
-			}
+
+			return language === "txt" || extensions.has(language);
+		});
+
+		if (file) {
+			const fileExtension = extname(file.name!).substring(1);
+			const language = fileExtension || "txt";
 
 			const code = await fetch(file.url)
 				.then((res) => res.text())
-				.catch(() => undefined);
+				.catch(noop);
 
-			if (!code?.trim()) {
+			const processed =
+				message.content.split("\n", MAX_LINES).length === MAX_LINES
+					? await processContent(message.content)
+					: undefined;
+
+			const content = code?.trim() ? await createBin(code, language).catch((e: Error) => e) : undefined;
+
+			if (!content && !processed) {
 				return;
 			}
 
-			const content = await createBin(code, language).catch((e: Error) => e.message);
-			const processed = await processContent(message.content);
+			if (content instanceof Error) {
+				// eslint-disable-next-line max-len
+				const botMessage = `${content}\n\nCependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent). Nous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${process.env.BIN_URL!.slice(
+					0,
+					-4,
+				)}`;
 
-			if (processed) {
-				sendBinEmbed(message, processed, (embed) => embed.addField("📁 Attachement", content));
-			} else {
-				sendBinEmbed(message, content);
+				await message.channel.send(botMessage).catch(noop);
+
+				return;
 			}
+
+			const otherAttachments = message.attachments.filter((attachment) => attachment.id !== file.id);
+
+			await sendBinEmbed(
+				message,
+				processed || message.content.trim(),
+				content ? (embed): MessageEmbed => embed.addField("📁 Pièce jointe", content) : undefined,
+				otherAttachments.size > 0 ? otherAttachments : undefined,
+			);
+
 			return;
 		}
 
 		const lines = message.content.split("\n", MAX_LINES).length;
+
 		if (lines < MAX_LINES) {
 			return;
 		}
 
-		const processed = await processContent(message.content);
+		const processed = await processContent(message.content).catch(noop);
+
 		if (processed) {
-			sendBinEmbed(message, processed);
+			sendBinEmbed(
+				message,
+				processed,
+				undefined,
+				message.attachments.size > 0 ? message.attachments : undefined,
+			).catch(noop);
 		}
 	}
 }

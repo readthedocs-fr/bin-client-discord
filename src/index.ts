@@ -1,4 +1,5 @@
 import { Client } from "./classes";
+import { logError } from "./helpers/logError";
 
 const client = new Client({
 	partials: ["USER", "GUILD_MEMBER"],
@@ -8,6 +9,6 @@ const client = new Client({
 });
 
 client.init().catch((error) => {
-	console.error(`[${new Date().toLocaleString()}]`, error);
+	logError(error);
 	process.exit(1);
 });
