@@ -1,5 +1,6 @@
 import { BinError } from "../misc/BinError";
-import { createBin } from ".";
+import { createBin } from "./createBin";
+import { logError } from "./logError";
 
 const BACK_TICK = "`";
 const ESCAPE = "\\";
@@ -117,8 +118,8 @@ export async function processContent(source: string): Promise<string | undefined
 					.catch((e: Error) => {
 						errors++;
 						// log if the error is critical.
-						if (e instanceof Error || e instanceof BinError && [400, 403, 404, 405].includes(e.code)) {
-							console.error(e);
+						if (e instanceof BinError ? [400, 403, 404, 405].includes(e.code) : true) {
+							logError(e);
 						}
 						return `[${e}]`;
 					});

@@ -3,6 +3,7 @@ import { readdir } from "fs/promises";
 import { join } from "path";
 
 import { capitalize, formatDate, isCurrentEnvValid } from "../helpers";
+import { logError } from "../helpers/logError";
 import { Command, Event } from ".";
 
 const noop = (): void => {};
@@ -30,7 +31,7 @@ export class Client extends DiscordClient {
 				try {
 					await this.loadCommand(commandPath);
 				} catch (error) {
-					console.error(`Could not load command in ${folder}.`, error);
+					logError(`Could not load command in ${folder}.`, error);
 				}
 			}
 		}
@@ -43,7 +44,7 @@ export class Client extends DiscordClient {
 				try {
 					await this.loadEvent(eventPath, folder);
 				} catch (error) {
-					console.error(`Could not load event in ${folder}.`, error);
+					logError(`Could not load event in ${folder}.`, error);
 				}
 			}
 		}
