@@ -27,7 +27,7 @@ export default class MessageEvent extends Event {
 		}
 
 		const file = message.attachments.find((attachment) => {
-			if (attachment.name == null || attachment.width) {
+			if (!attachment.name || attachment.name === "" || attachment.width) {
 				return false;
 			}
 
@@ -41,24 +41,15 @@ export default class MessageEvent extends Event {
 			const fileExtension = extname(file.name!).substring(1);
 			const language = fileExtension || "txt";
 
-			const isValidLanguage = language === "txt" || extensions.has(language);
-			if (!isValidLanguage && !message.content.trim()) {
-				return;
-			}
-
-			// prettier-ignore
-			// There are conflicts between Prettier and ESLint
-			const code =
-				isValidLanguage
-					? await fetch(file.url)
-						.then((res) => res.text())
-						.catch(noop)
-					: undefined;
+			const code = await fetch(file.url)
+				.then((res) => res.text())
+				.catch(noop);
 
 			const processed =
 				message.content.split("\n", MAX_LINES).length === MAX_LINES
 					? await processContent(message.content)
 					: undefined;
+
 			const content = code?.trim() ? await createBin(code, language).catch((e: Error) => e) : undefined;
 
 			if (!content && !processed) {
