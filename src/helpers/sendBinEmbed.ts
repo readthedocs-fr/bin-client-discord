@@ -25,7 +25,7 @@ export async function sendBinEmbed(
 		let totalSize = 0;
 
 		for (const attachment of attachments.values()) {
-			if (totalSize > MAX_FILE_SIZE) {
+			if (totalSize + attachment.size > MAX_FILE_SIZE) {
 				break;
 			}
 
