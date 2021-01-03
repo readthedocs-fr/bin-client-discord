@@ -1,3 +1,4 @@
+import { BinError } from "../misc/BinError";
 import { createBin } from ".";
 
 const BACK_TICK = "`";
@@ -115,6 +116,10 @@ export async function processContent(source: string): Promise<string | undefined
 					// eslint-disable-next-line @typescript-eslint/no-loop-func
 					.catch((e: Error) => {
 						errors++;
+						// log if the error is critical.
+						if (e instanceof BinError && [400, 403, 404, 405].includes(e.code)) {
+							console.error(e);
+						}
 						return `[${e}]`;
 					});
 				codes.set(result.content.trim(), bin);
