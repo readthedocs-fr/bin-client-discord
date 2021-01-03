@@ -117,7 +117,7 @@ export async function processContent(source: string): Promise<string | undefined
 					.catch((e: Error) => {
 						errors++;
 						// log if the error is critical.
-						if (e instanceof BinError && [400, 403, 404, 405].includes(e.code)) {
+						if (e instanceof Error || e instanceof BinError && [400, 403, 404, 405].includes(e.code)) {
 							console.error(e);
 						}
 						return `[${e}]`;
