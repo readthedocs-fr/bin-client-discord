@@ -27,7 +27,17 @@ export default class MessageEvent extends Event {
 		}
 
 		if (message.attachments.size > 0) {
-			const file = message.attachments.first(); // only take first attachment as, normally, users cannot send more than one attachment
+			const file =
+				message.attachments.find((attachment) => {
+					if (!attachment.name || attachment.width) {
+						return false;
+					}
+
+					const fileExtension = extname(attachment.name).substring(1);
+					const language = fileExtension || "txt";
+
+					return language === "txt" || extensions.has(language);
+				}) || message.attachments.first(); // only take first attachment as, normally, users cannot send more than one attachment
 
 			if (!file?.name) {
 				return;
@@ -71,11 +81,13 @@ export default class MessageEvent extends Event {
 				return;
 			}
 
+			const otherAttachments = message.attachments.filter((attachment) => attachment.id !== file.id);
+
 			await sendBinEmbed(
 				message,
 				processed || message.content.trim(),
 				content ? (embed): MessageEmbed => embed.addField("📁 Pièce jointe", content) : undefined,
-				!code ? file : undefined,
+				otherAttachments.size ? otherAttachments : undefined,
 			);
 
 			return;
