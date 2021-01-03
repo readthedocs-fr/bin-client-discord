@@ -12,7 +12,7 @@ import { Stream } from "stream";
 
 const noop = (): undefined => undefined;
 
-const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MiB
+const MAX_FILE_SIZE = 8_388_119; // https://www.reddit.com/r/discordapp/comments/aflp3p/the_truth_about_discord_file_upload_limits/
 
 export async function sendBinEmbed(
 	message: Message,
