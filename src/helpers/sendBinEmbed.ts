@@ -1,14 +1,4 @@
-import {
-	BufferResolvable,
-	Collection,
-	Message,
-	MessageAttachment,
-	MessageEmbed,
-	MessageReaction,
-	Snowflake,
-	User,
-} from "discord.js";
-import { Stream } from "stream";
+import { Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, Snowflake, User } from "discord.js";
 
 const noop = (): undefined => undefined;
 
@@ -29,21 +19,21 @@ export async function sendBinEmbed(
 	}
 
 	const waitMessage = await message.channel.send("Transformation du message en cours...").catch(noop);
-	const files: (BufferResolvable | Stream)[] = [];
+	const files: MessageAttachment[] = [];
 
 	if (attachments) {
 		let totalSize = 0;
 
-		attachments.reduce((acc, cur) => {
+		for (const attachment of attachments.values()) {
 			if (totalSize > MAX_FILE_SIZE) {
-				return acc;
+				break;
 			}
 
-			acc.push(cur.attachment);
-			totalSize += cur.size;
-			return acc;
-		}, files);
+			files.push(attachment);
+			totalSize += attachment.size;
+		}
 	}
+
 	const botMessage = await message.channel.send({ embed, files }).catch(noop);
 
 	await waitMessage?.delete().catch(noop);

@@ -26,34 +26,30 @@ export default class MessageEvent extends Event {
 			return;
 		}
 
-		if (message.attachments.size > 0) {
-			const file =
-				message.attachments.find((attachment) => {
-					if (!attachment.name || attachment.width) {
-						return false;
-					}
-
-					const fileExtension = extname(attachment.name).substring(1);
-					const language = fileExtension || "txt";
-
-					return language === "txt" || extensions.has(language);
-				}) || message.attachments.first(); // only take first attachment as, normally, users cannot send more than one attachment
-
-			if (!file?.name) {
-				return;
+		const file = message.attachments.find((attachment) => {
+			if (attachment.name == null || attachment.width) {
+				return false;
 			}
 
-			const fileExtension = extname(file.name).substring(1);
+			const fileExtension = extname(attachment.name).substring(1);
 			const language = fileExtension || "txt";
 
-			if (language !== "txt" && !extensions.has(language) && !message.content.trim()) {
+			return language === "txt" || extensions.has(language);
+		});
+
+		if (file) {
+			const fileExtension = extname(file.name!).substring(1);
+			const language = fileExtension || "txt";
+
+			const isValidLanguage = language === "txt" || extensions.has(language);
+			if (!isValidLanguage && !message.content.trim()) {
 				return;
 			}
 
 			// prettier-ignore
 			// There are conflicts between Prettier and ESLint
 			const code =
-				language === "txt" || extensions.has(language)
+				isValidLanguage
 					? await fetch(file.url)
 						.then((res) => res.text())
 						.catch(noop)
@@ -87,7 +83,7 @@ export default class MessageEvent extends Event {
 				message,
 				processed || message.content.trim(),
 				content ? (embed): MessageEmbed => embed.addField("📁 Pièce jointe", content) : undefined,
-				otherAttachments.size ? otherAttachments : undefined,
+				otherAttachments.size > 0 ? otherAttachments : undefined,
 			);
 
 			return;
@@ -102,7 +98,7 @@ export default class MessageEvent extends Event {
 		const processed = await processContent(message.content).catch(noop);
 
 		if (processed) {
-			sendBinEmbed(message, processed).catch(noop);
+			sendBinEmbed(message, processed, undefined, message.attachments).catch(noop);
 		}
 	}
 }
