@@ -89,7 +89,12 @@ export default class MessageEvent extends Event {
 		const processed = await processContent(message.content).catch(noop);
 
 		if (processed) {
-			sendBinEmbed(message, processed, undefined, message.attachments).catch(noop);
+			sendBinEmbed(
+				message,
+				processed,
+				undefined,
+				message.attachments.size > 0 ? message.attachments : undefined,
+			).catch(noop);
 		}
 	}
 }
