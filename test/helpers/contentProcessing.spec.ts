@@ -1,4 +1,4 @@
-import { processContent } from "../src/helpers";
+import { processContent } from "../../src/helpers";
 
 const binUrl = (ext = "txt"): string => `<https://rtdbin\\.fusetim\\.tk/[A-Za-z]+\\.${ext}>`;
 const MAX_LINES = 3;
