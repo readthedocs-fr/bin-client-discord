@@ -20,13 +20,18 @@ export async function sendBinEmbed(
 	}
 
 	const waitMessage = await message.channel.send("Transformation du message en cours...").catch(noop);
-	let files: MessageAttachment[] = [];
+	const files: MessageAttachment[] = [];
 
 	if (attachments) {
 		let totalSize = 0;
-		files = attachments
-			.array()
-			.filter((file) => (file.size + totalSize < MAX_FILE_SIZE ? !void (totalSize += file.size) : false));
+		for (const attachment of attachments.values()) {
+			if (totalSize + attachment.size > MAX_FILE_SIZE) {
+				continue;
+			}
+
+			files.push(attachment);
+			totalSize += attachment.size;
+		}
 	}
 
 	const botMessage = await message.channel.send({ embed, files }).catch(noop);
