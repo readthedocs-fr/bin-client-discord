@@ -58,11 +58,11 @@ export default class MessageEvent extends Event {
 			}
 
 			if (content instanceof Error) {
-				const errorEmbed = new MessageEmbed().setTitle(content.toString()).setDescription(
+				const errorEmbed = new MessageEmbed({ title: content.toString() }).setDescription(
 					// eslint-disable-next-line max-len
 					`Cependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent).\n\nNous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${
 						new URL(process.env.BIN_URL!).origin
-					} (s'il est HS, utilisez d'autres alternatives comme https://paste.artemix.org/).`,
+					} (s'il est hors-ligne, utilisez d'autres alternatives comme https://paste.artemix.org/).`,
 				);
 
 				await message.channel.send(errorEmbed).catch(noop);
