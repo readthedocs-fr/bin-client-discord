@@ -1,4 +1,4 @@
-import { Collection, Message, MessageAttachment, MessageEmbed, Snowflake } from "discord.js";
+import { Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, Snowflake, User } from "discord.js";
 
 const noop = (): undefined => undefined;
 
@@ -47,7 +47,7 @@ export async function sendBinEmbed(
 	await botMessage.react("🗑️");
 
 	const collector = await botMessage.awaitReactions(
-		({ emoji }, { id }) => id === message.author.id && emoji.name === "🗑️",
+		({ emoji }: MessageReaction, { id }: User) => id === message.author.id && emoji.name === "🗑️",
 		{ max: 1, time: 20 * 1000 },
 	);
 	if (collector.size === 0) {
