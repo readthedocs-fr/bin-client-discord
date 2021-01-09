@@ -1,6 +1,7 @@
 import { GuildChannel, Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { extname } from "path";
+import { URL } from "url";
 
 import { Client, Event } from "../../classes";
 import { createBin, processContent, sendBinEmbed } from "../../helpers";
@@ -57,13 +58,14 @@ export default class MessageEvent extends Event {
 			}
 
 			if (content instanceof Error) {
-				// eslint-disable-next-line max-len
-				const botMessage = `${content}\n\nCependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent). Nous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${process.env.BIN_URL!.slice(
-					0,
-					-4,
-				)}`;
+				const errorEmbed = new MessageEmbed({ title: content.toString() }).setDescription(
+					// eslint-disable-next-line max-len
+					`Cependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent).\n\nNous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${
+						new URL(process.env.BIN_URL!).origin
+					} (s'il est hors-ligne, utilisez d'autres alternatives comme https://paste.artemix.org/).`,
+				);
 
-				await message.channel.send(botMessage).catch(noop);
+				await message.channel.send(errorEmbed).catch(noop);
 
 				return;
 			}
