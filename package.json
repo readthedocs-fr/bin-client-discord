@@ -7,9 +7,9 @@
 		"build": "tsc -p tsconfig.prod.json",
 		"start": "node -r source-map-support/register -r dotenv/config .",
 		"dev": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"ts-node -r dotenv/config src/index.ts\"",
-		"lint": "eslint src --ext ts",
+		"lint": "eslint src test --ext ts",
 		"format": "npm run lint -- --fix",
-		"test": "jest --detectOpenHandles --force-exit"
+		"test": "jest --testTimeout=10000 --detectOpenHandles --force-exit"
 	},
 	"author": "Read The Docs FR",
 	"license": "MIT",

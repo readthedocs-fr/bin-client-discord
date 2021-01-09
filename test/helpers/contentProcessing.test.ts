@@ -1,12 +1,12 @@
 import { processContent } from "../../src/helpers";
 
-const binUrl = (ext = "txt"): string => `<https://rtdbin\\.fusetim\\.tk/[A-Za-z]+\\.${ext}>`;
+const binUrl = (ext = "txt"): string => `<http://localhost:8012/[A-Za-z]+\\.${ext}>`;
 const MAX_LINES = 3;
 
 describe(processContent, () => {
 	it("should replace the code with undefined when an error occurs since there are no changes", async () => {
 		jest.resetModules();
-		process.env.BIN_URL = "https://rtdbin.timoth.ee/new";
+		process.env.BIN_URL = "https://binn.readthedocs.fr/new";
 		console.error = jest.fn();
 		expect(await processContent("see : `this\nis\nmultiline !`", MAX_LINES)).toBeUndefined();
 		expect(console.error).toBeCalledTimes(1);
@@ -14,7 +14,7 @@ describe(processContent, () => {
 
 	beforeEach(() => {
 		jest.resetModules();
-		process.env.BIN_URL = "https://rtdbin.fusetim.tk/new";
+		process.env.BIN_URL = "http://localhost:8012/new";
 	});
 
 	it("should replace the code with the error message when an error occurs", async () => {

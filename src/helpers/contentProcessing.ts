@@ -67,7 +67,7 @@ function match(source: string): { name: string; result: CodeToken } | undefined 
 }
 
 function replaceAt(source: string, replacement: string, start: number, end: number): string {
-	return source.substring(0, start + 1) + replacement + source.substring(end, source.length);
+	return source.slice(0, start + 1) + replacement + source.slice(end, source.length);
 }
 
 export async function processContent(source: string, maxLines: number): Promise<string | undefined> {
@@ -90,7 +90,7 @@ export async function processContent(source: string, maxLines: number): Promise<
 		}
 
 		if (char === BACK_TICK) {
-			const matches = match(`${escaped ? ESCAPE : ""}${final.substring(i)}`);
+			const matches = match(`${escaped ? ESCAPE : ""}${final.slice(i)}`);
 			if (!matches) {
 				continue;
 			}

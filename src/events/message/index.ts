@@ -31,14 +31,14 @@ export default class MessageEvent extends Event {
 				return false;
 			}
 
-			const fileExtension = extname(attachment.name).substring(1);
+			const fileExtension = extname(attachment.name).slice(1);
 			const language = fileExtension || "txt";
 
 			return language === "txt" || extensions.has(language);
 		});
 
 		if (file) {
-			const fileExtension = extname(file.name!).substring(1);
+			const fileExtension = extname(file.name!).slice(1);
 			const language = fileExtension || "txt";
 
 			const code = await fetch(file.url)
