@@ -3,7 +3,7 @@ import { Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, 
 const noop = (): undefined => undefined;
 
 // https://www.reddit.com/r/discordapp/comments/aflp3p/the_truth_about_discord_file_upload_limits/
-const MAX_FILE_SIZE = 8_388_120;
+const MAX_FILE_SIZE = 8_388_119;
 
 export async function sendBinEmbed(
 	message: Message,
