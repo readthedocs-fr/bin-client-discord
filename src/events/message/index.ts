@@ -1,11 +1,11 @@
 import { GuildChannel, Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { extname } from "path";
+import { URL } from "url";
 
 import { Client, Event } from "../../classes";
 import { createBin, processContent, sendBinEmbed } from "../../helpers";
 import { extensions } from "../../misc/extensions";
-import { URL } from "url";
 
 const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 
