@@ -7,7 +7,7 @@ const errors: Record<number, string> = {
 	// eslint-disable-next-line max-len
 	413: "Erreur 413 : requête trop large. Votre code est trop lourd pour le service de bin qui a refusé de traiter la requête.",
 	502: "Erreur 502: bad gateway.",
-	522: "Erreur 522: timeout (cloudflare). Il est fort possible que le site ait planté",
+	522: "Erreur 522: timeout (cloudflare). Il est fort possible que le site ait planté.",
 };
 
 export class BinError extends Error {
