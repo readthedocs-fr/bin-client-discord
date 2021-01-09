@@ -4,7 +4,6 @@ import { logError } from "./logError";
 
 const BACK_TICK = "`";
 const ESCAPE = "\\";
-const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 
 interface CodeToken {
 	raw: string;
@@ -68,20 +67,18 @@ function match(source: string): { name: string; result: CodeToken } | undefined 
 }
 
 function replaceAt(source: string, replacement: string, start: number, end: number): string {
-	return source.substring(0, start + 1) + replacement + source.substring(end, source.length);
+	return source.slice(0, start + 1) + replacement + source.slice(end, source.length);
 }
 
-export async function processContent(source: string): Promise<string | undefined> {
+export async function processContent(source: string, maxLines: number): Promise<string | undefined> {
 	if (!source.trim()) {
 		return;
 	}
 
-	const codes = new Map<string, string>();
+	const codes = new Map<string, (ext?: string) => string>();
 	let final = source;
 
 	let escaped = false;
-	let changed = false;
-
 	let errors = 0;
 
 	for (let i = 0; i < final.length; i++) {
@@ -93,7 +90,7 @@ export async function processContent(source: string): Promise<string | undefined
 		}
 
 		if (char === BACK_TICK) {
-			const matches = match(`${escaped ? ESCAPE : ""}${final.substring(i)}`);
+			const matches = match(`${escaped ? ESCAPE : ""}${final.slice(i)}`);
 			if (!matches) {
 				continue;
 			}
@@ -101,19 +98,20 @@ export async function processContent(source: string): Promise<string | undefined
 			const { result } = matches;
 
 			const start = i - 1;
-			const lines = result.content.split("\n", MAX_LINES).length;
+			const lines = result.content.split("\n", maxLines).length;
 
-			if (lines < MAX_LINES) {
+			if (lines < maxLines) {
 				i += result.end - 1;
 				continue;
 			}
 
-			changed = true;
-			let bin = codes.get(result.content.trim());
+			let bin = codes.get(result.content.trim())?.(result.lang);
 
 			if (!bin) {
-				bin = await createBin(result.content, result.lang)
-					.then((url) => `<${url}>`)
+				const link = await createBin(result.content, result.lang)
+					.then((url) => (ext = "txt"): string =>
+						`<${url.slice(0, url.endsWith("txt") ? -3 : -result.lang!.length)}${ext}>`,
+					)
 					// eslint-disable-next-line @typescript-eslint/no-loop-func
 					.catch((e: Error) => {
 						errors++;
@@ -121,9 +119,10 @@ export async function processContent(source: string): Promise<string | undefined
 						if (e instanceof BinError ? [400, 403, 404, 405].includes(e.code) : true) {
 							logError(e);
 						}
-						return `[${e}]`;
+						return (): string => `[${e}]`;
 					});
-				codes.set(result.content.trim(), bin);
+				bin = link(result.lang);
+				codes.set(result.content.trim(), link);
 			}
 
 			final = replaceAt(final, bin, start, i + result.end);
@@ -134,6 +133,5 @@ export async function processContent(source: string): Promise<string | undefined
 
 		escaped = false;
 	}
-
-	return codes.size > errors && changed ? final : undefined;
+	return codes.size - errors > 0 ? final : undefined;
 }

@@ -31,14 +31,14 @@ export default class MessageEvent extends Event {
 				return false;
 			}
 
-			const fileExtension = extname(attachment.name).substring(1);
+			const fileExtension = extname(attachment.name).slice(1);
 			const language = fileExtension || "txt";
 
 			return language === "txt" || extensions.has(language);
 		});
 
 		if (file) {
-			const fileExtension = extname(file.name!).substring(1);
+			const fileExtension = extname(file.name!).slice(1);
 			const language = fileExtension || "txt";
 
 			const code = await fetch(file.url)
@@ -47,7 +47,7 @@ export default class MessageEvent extends Event {
 
 			const processed =
 				message.content.split("\n", MAX_LINES).length === MAX_LINES
-					? await processContent(message.content)
+					? await processContent(message.content, MAX_LINES)
 					: undefined;
 
 			const content = code?.trim() ? await createBin(code, language).catch((e: Error) => e) : undefined;
@@ -86,7 +86,7 @@ export default class MessageEvent extends Event {
 			return;
 		}
 
-		const processed = await processContent(message.content).catch(noop);
+		const processed = await processContent(message.content, MAX_LINES).catch(noop);
 
 		if (processed) {
 			sendBinEmbed(
