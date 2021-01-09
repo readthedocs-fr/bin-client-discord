@@ -8,6 +8,7 @@ describe(processContent, () => {
 		jest.resetModules();
 		process.env.BIN_URL = "https://binn.readthedocs.fr/new";
 		console.error = jest.fn();
+
 		expect(await processContent("see : `this\nis\nmultiline !`", MAX_LINES)).toBeUndefined();
 		expect(console.error).toBeCalledTimes(1);
 	});
