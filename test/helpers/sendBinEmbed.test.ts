@@ -65,6 +65,7 @@ describe(sendBinEmbed, () => {
 	it("should react with 🗑️", async () => {
 		const message = new MockMessage();
 		await sendBinEmbed((message as unknown) as Message, "hey");
+
 		expect(message.react).toBeCalledTimes(1);
 		expect(message.react).toBeCalledWith("🗑️");
 	});
