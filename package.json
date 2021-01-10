@@ -2,7 +2,7 @@
 	"name": "readthebin",
 	"version": "1.0.0",
 	"private": true,
-	"main": "build/index.js",
+	"main": "build/src/index.js",
 	"scripts": {
 		"build": "tsc -p tsconfig.prod.json",
 		"start": "node -r source-map-support/register -r dotenv/config .",
