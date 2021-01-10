@@ -1,7 +1,6 @@
 {
 	"compilerOptions": {
 		"module": "commonjs",
-		"rootDir": ".",
 		"outDir": "./build",
 		"target": "ESNext",
 		"lib": ["ESNext"],
