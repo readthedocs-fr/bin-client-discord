@@ -40,8 +40,8 @@ describe(processContent, () => {
 	});
 
 	it("should replace duplicated codes by the same bin url with different extension", async () => {
-		const [first, last] = (await processContent("```jss\na\nb\nc``` ```ts\na\nb\nc```", MAX_LINES))!.split(" ", 2);
-		expect(last).toEqual(`${first.slice(0, -4)}ts>`);
+		const [first, last] = (await processContent("```python\na\nb``` ```py\na\nb```", 1))!.split(" ", 2);
+		expect(first).toEqual(`${last.slice(0, -3)}python>`);
 	});
 
 	it("should make the corrects changes", async () => {

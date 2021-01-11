@@ -1,3 +1,5 @@
+import { extname } from "path";
+
 import { BinError } from "../misc/BinError";
 import { createBin } from "./createBin";
 import { logError } from "./logError";
@@ -109,9 +111,7 @@ export async function processContent(source: string, maxLines: number): Promise<
 
 			if (!bin) {
 				const link = await createBin(result.content, result.lang)
-					.then((url) => (ext = "txt"): string =>
-						`<${url.slice(0, url.endsWith("txt") ? -3 : -result.lang!.length)}${ext}>`,
-					)
+					.then((url) => (ext = "txt"): string => `<${url.replace(extname(url), `.${ext}`)}>`)
 					// eslint-disable-next-line @typescript-eslint/no-loop-func
 					.catch((e: Error) => {
 						errors++;
