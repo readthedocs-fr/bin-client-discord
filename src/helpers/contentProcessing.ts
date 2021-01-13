@@ -21,7 +21,7 @@ interface Rule {
 
 const rules: Record<string, Rule> = {
 	codeBlock: {
-		regex: /^```(?:([\w+\-.]+?)?(?:\s*\n))?([^\n].*?)\n*```/sy,
+		regex: /^```(?:([\w-.]*)?(?:\s*\n))?([^\n].*?)\n*```/sy,
 		matcher([raw, lang, content]: string[], end: number): CodeToken | undefined {
 			if (!content?.trim()) {
 				return;
