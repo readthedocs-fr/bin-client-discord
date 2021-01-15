@@ -68,8 +68,8 @@ function match(source: string): { name: string; result: CodeToken } | undefined 
 	}
 }
 
-function replaceAt(source: string, replacement: string, start: number, end: number): string {
-	return source.slice(0, start + 1) + replacement + source.slice(end, source.length);
+function insertAt(source: string, insertion: string, start: number, end = start): string {
+	return source.slice(0, start) + insertion + source.slice(end);
 }
 
 export async function processContent(source: string, maxLines: number): Promise<string | undefined> {
@@ -116,7 +116,7 @@ export async function processContent(source: string, maxLines: number): Promise<
 					.catch((e: Error) => {
 						errors++;
 						// log if the error is critical.
-						if (e instanceof BinError ? [400, 403, 404, 405].includes(e.code) : true) {
+						if (!(e instanceof BinError) || [400, 403, 404, 405].includes(e.code)) {
 							logError(e);
 						}
 						return (): string => `[${e}]`;
@@ -125,7 +125,7 @@ export async function processContent(source: string, maxLines: number): Promise<
 				codes.set(result.content.trim(), link);
 			}
 
-			final = replaceAt(final, bin, start, i + result.end);
+			final = insertAt(final, bin, start + 1, i + result.end);
 			i += bin.length - 1;
 
 			continue;
