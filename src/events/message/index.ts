@@ -1,5 +1,5 @@
 import { GuildChannel, Message, MessageEmbed } from "discord.js";
-import fetch from "node-fetch";
+import got from "got";
 import { extname } from "path";
 import { URL } from "url";
 
@@ -28,7 +28,7 @@ export default class MessageEvent extends Event {
 		}
 
 		const file = message.attachments.find((attachment) => {
-			if (!attachment.name || attachment.name === "" || attachment.width) {
+			if (!attachment.name || attachment.width) {
 				return false;
 			}
 
@@ -39,19 +39,15 @@ export default class MessageEvent extends Event {
 		});
 
 		if (file) {
-			const fileExtension = extname(file.name!).slice(1);
-			const language = fileExtension || "txt";
-
-			const code = await fetch(file.url)
-				.then((res) => res.text())
-				.catch(noop);
+			const code = await got(file.url, { http2: true }).text().catch(noop);
 
 			const processed =
 				message.content.split("\n", MAX_LINES).length === MAX_LINES
 					? await processContent(message.content, MAX_LINES)
 					: undefined;
 
-			const content = code?.trim() ? await createBin(code, language).catch((e: Error) => e) : undefined;
+			const language = extname(file.name!).slice(1);
+			const content = code?.trim() ? await createBin({ code, language }).catch((e: Error) => e) : undefined;
 
 			if (!content && !processed) {
 				return;
