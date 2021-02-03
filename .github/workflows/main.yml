@@ -2,7 +2,25 @@
 
 name: Continuous Integration
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - '**.ts'
+      - package.json
+      - tsconfig.json
+      - tsconfig.prod.json
+      - rtdbin-docker-compose.yml
+      - jest.config.json
+      - '.github/workflows/**/*'
+  pull_request:
+    paths:
+      - '**.ts'
+      - package.json
+      - tsconfig.json
+      - tsconfig.prod.json
+      - rtdbin-docker-compose.yml
+      - jest.config.json
+      - '.github/workflows/**/*'
 
 jobs:
   build:
