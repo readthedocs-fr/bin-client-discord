@@ -8,6 +8,7 @@ import { createBin, processContent, sendBinEmbed } from "../../helpers";
 import { extensions } from "../../misc/extensions";
 
 const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
+const ORIGIN_URL = new URL(process.env.BIN_URL!).origin;
 
 const noop = (): undefined => undefined;
 
@@ -19,11 +20,21 @@ export default class MessageEvent extends Event {
 	public async listener(message: Message): Promise<void> {
 		const categories = process.env.CATEGORIES!.split(",");
 
-		if (
-			!(message.channel instanceof GuildChannel) ||
-			message.author.bot ||
-			!categories.includes(message.channel.parentID!)
-		) {
+		if (!(message.channel instanceof GuildChannel) || message.author.bot) {
+			return;
+		}
+
+		if (message.mentions.has(this.client.user!)) {
+			const apiHealth = `${ORIGIN_URL}/health`;
+			const status = await got(apiHealth).text().catch(noop);
+			const reaction = status === "alive" ? "✅" : "❌";
+
+			message.react(reaction).catch(noop);
+
+			return;
+		}
+
+		if (!categories.includes(message.channel.parentID!)) {
 			return;
 		}
 
@@ -56,9 +67,7 @@ export default class MessageEvent extends Event {
 			if (content instanceof Error) {
 				const errorEmbed = new MessageEmbed({ title: content.toString() }).setDescription(
 					// eslint-disable-next-line max-len
-					`Cependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent).\n\nNous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${
-						new URL(process.env.BIN_URL!).origin
-					} (s'il est hors-ligne, utilisez d'autres alternatives comme https://paste.artemix.org/).`,
+					`Cependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent).\n\nNous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${ORIGIN_URL} (s'il est hors-ligne, utilisez d'autres alternatives comme https://paste.artemix.org/).`,
 				);
 
 				await message.channel.send(errorEmbed).catch(noop);
