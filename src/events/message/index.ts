@@ -38,9 +38,9 @@ export default class MessageEvent extends Event {
 
 			const embed = new MessageEmbed()
 				.setAuthor(this.client.user!.username, this.client.user!.displayAvatarURL({ dynamic: true }))
-				.setColor(0xb5e655)
+				.setColor(binHealth === "alive" ? 0xb5e655 : 0xa61111)
 				.setTitle("Pong !")
-				.addField("État du bin", binHealth === "alive" ? "✅ En ligne" : "❌ Hors ligne", true)
+				.addField("État du bin", binHealth === "alive" ? "En ligne" : "Hors ligne", true)
 				.addField("Latence du bot", `${pingMessage.createdTimestamp - message.createdTimestamp}ms`, true)
 				.addField("Latence du WebSocket", `${Math.round(this.client.ws.ping)}ms`, true);
 
