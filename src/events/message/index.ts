@@ -37,7 +37,7 @@ export default class MessageEvent extends Event {
 			const binHealth = await got(`${ORIGIN_URL}/health`).text().catch(noop);
 
 			const embed = new MessageEmbed()
-				.setColor(binHealth === "alive" ? 0xb5e655 : 0xf33030)
+				.setColor(binHealth === "alive" ? 0x2ab533 : 0xf33030)
 				.addField("État du bin", binHealth === "alive" ? "En ligne" : "Hors ligne", true)
 				.addField("Latence du bot", `${pingMessage.createdTimestamp - message.createdTimestamp}ms`, true)
 				.addField("Latence du WebSocket", `${Math.round(this.client.ws.ping)}ms`, true);
