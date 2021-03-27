@@ -25,8 +25,9 @@ export default class MessageEvent extends Event {
 		}
 
 		if (
-			message.content.trim().toLowerCase() === `<@!${this.client.user!.id}> ping` ||
-			message.content.trim().toLowerCase() === `<@${this.client.user!.id}> ping`
+			[`<@!${this.client.user!.id}> ping`, `<@${this.client.user!.id}> ping`].includes(
+				message.content.trim().toLowerCase(),
+			)
 		) {
 			const pingMessage = await message.channel.send("Ping ?").catch(noop);
 
