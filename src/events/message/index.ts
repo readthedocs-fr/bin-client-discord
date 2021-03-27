@@ -24,12 +24,27 @@ export default class MessageEvent extends Event {
 			return;
 		}
 
-		if (message.mentions.has(this.client.user!)) {
-			const apiHealth = `${ORIGIN_URL}/health`;
-			const status = await got(apiHealth).text().catch(noop);
-			const reaction = status === "alive" ? "✅" : "❌";
+		if (
+			message.content.trim().toLowerCase() === `<@!${this.client.user!.id}> ping` ||
+			message.content.trim().toLowerCase() === `<@${this.client.user!.id}> ping`
+		) {
+			const pingMessage = await message.channel.send("Ping ?").catch(noop);
 
-			message.react(reaction).catch(noop);
+			if (!pingMessage) {
+				return;
+			}
+
+			const binHealth = await got(`${ORIGIN_URL}/health`).text().catch(noop);
+
+			const embed = new MessageEmbed()
+				.setAuthor(this.client.user!.username, this.client.user!.displayAvatarURL({ dynamic: true }))
+				.setColor(0xb5e655)
+				.setTitle("Pong !")
+				.addField("État du bin", binHealth === "alive" ? "✅ En ligne" : "❌ Hors ligne", true)
+				.addField("Latence du bot", `${pingMessage.createdTimestamp - message.createdTimestamp}ms`, true)
+				.addField("Latence du WebSocket", `${Math.round(this.client.ws.ping)}ms`, true);
+
+			pingMessage.edit("", embed).catch(noop);
 
 			return;
 		}
