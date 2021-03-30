@@ -1,3 +1,4 @@
+import { FormData } from "@typescord/form-data";
 import got, { HTTPError } from "got";
 
 import { BinError } from "../misc/BinError";
@@ -8,26 +9,33 @@ interface BinOptions {
 	code: string;
 	language?: string;
 	lifeTime?: string | number;
-	maxUsage?: number;
+	maxUses?: number;
 }
-export async function createBin({ code, language, lifeTime, maxUsage }: BinOptions): Promise<string> {
-	const binUrl = process.env.BIN_URL!;
+
+export async function createBin({ code, language, lifeTime, maxUses }: BinOptions): Promise<string> {
+	const fd = new FormData([
+		{ name: "code", value: code.replace(TOKEN_REGEXP, "[DISCORD TOKEN DETECTED]") },
+		{ name: "lang", value: language || "txt" },
+		{ name: "lifetime", value: (lifeTime || 0).toString() },
+		{ name: "maxusage", value: (maxUses ?? 0).toString() },
+	]);
+
+	const contentLength = await fd.getComputedLength();
 	return got
-		.post(binUrl, {
+		.post(process.env.BIN_URL!, {
 			http2: true,
 			followRedirect: false,
-			form: {
-				code: code.replace(TOKEN_REGEXP, "[DISCORD TOKEN DETECTED]"),
-				lang: language || "txt",
-				lifetime: lifeTime || 0,
-				maxusage: maxUsage ?? 0,
+			headers: {
+				...fd.headers,
+				"Content-Length": contentLength !== undefined ? contentLength.toString() : undefined,
 			},
+			body: fd.stream,
 		})
 		.then(({ headers }) => headers.location!)
-		.catch((e: Error) => {
-			if (e instanceof HTTPError) {
-				throw new BinError(e.message, e.response.statusCode);
+		.catch((error: Error) => {
+			if (error instanceof HTTPError) {
+				throw new BinError(error.message, error.response.statusCode);
 			}
-			throw e;
+			throw error;
 		});
 }

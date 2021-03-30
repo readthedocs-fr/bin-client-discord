@@ -1,7 +1,4 @@
 {
-	"compilerOptions": {
-		"sourceMap": false
-	},
 	"extends": "./tsconfig.json",
-	"exclude": ["test"]
+	"exclude": ["src/**/__tests__"]
 }

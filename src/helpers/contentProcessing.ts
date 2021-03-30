@@ -91,8 +91,8 @@ export async function processContent(source: string, maxLines: number): Promise<
 			continue;
 		}
 
-		if (char === BACK_TICK) {
-			const matches = match(`${escaped ? ESCAPE : ""}${final.slice(i)}`);
+		if (char === BACK_TICK && !escaped) {
+			const matches = match(final.slice(i));
 			if (!matches) {
 				continue;
 			}
@@ -116,11 +116,12 @@ export async function processContent(source: string, maxLines: number): Promise<
 					.catch((e: Error) => {
 						errors++;
 						// log if the error is critical.
-						if (!(e instanceof BinError) || [400, 403, 404, 405].includes(e.code)) {
+						if (!(e instanceof BinError) || (e.code >= 400 && e.code <= 408) || e.code >= 500) {
 							logError(e);
 						}
 						return (): string => `[${e}]`;
 					});
+
 				bin = link(result.lang);
 				codes.set(result.content.trim(), link);
 			}

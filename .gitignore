@@ -1,4 +1,10 @@
-node_modules/
-build/
-.idea/
+build
+.idea
 .env
+
+# Yarn 2
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+.pnp.*

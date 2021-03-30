@@ -1,4 +1,4 @@
-import { processContent } from "../../src/helpers";
+import { processContent } from "..";
 
 const binUrl = (ext = "txt"): string => `<http://localhost:8012/[A-Za-z]+\\.${ext}>`;
 const MAX_LINES = 3;
@@ -33,16 +33,16 @@ describe(processContent, () => {
 	});
 
 	it("should replace duplicated codes by the same bin url", async () => {
-		const [first, last] = (await processContent("`\na\nb\nc` et `\na\nb\nc`", MAX_LINES))!.split(" et ", 2);
-		expect(first).toEqual(last);
+		const results = (await processContent("`\na\nb\nc` et `\na\nb\nc`", MAX_LINES))?.split(" et ", 2);
+		expect(results?.[0]).toEqual(results?.[1]);
 
-		const [first2, last2] = (await processContent("```js\na\nb\nc``` ```js\na\nb\nc```", MAX_LINES))!.split(" ", 2);
-		expect(first2).toEqual(last2);
+		const results2 = (await processContent("```js\na\nb\nc``` ```js\na\nb\nc```", MAX_LINES))?.split(" ", 2);
+		expect(results2?.[0]).toEqual(results2?.[1]);
 	});
 
 	it("should replace duplicated codes by the same bin url with different extension", async () => {
-		const [first, last] = (await processContent("```python\na\nb``` ```py\na\nb```", 1))!.split(" ", 2);
-		expect(first).toEqual(`${last.slice(0, -3)}python>`);
+		const results = (await processContent("```python\na\nb``` ```py\na\nb```", 1))?.split(" ", 2);
+		expect(results?.[0]).toEqual(`${results?.[1].slice(0, -3)}python>`);
 	});
 
 	it("should make the corrects changes", async () => {
