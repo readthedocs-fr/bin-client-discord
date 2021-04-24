@@ -31,7 +31,7 @@ export default class MessageEvent extends Event {
 			)
 		) {
 			const pingMessage = await message.channel
-				.send(`Ping ? (Cela peut durer jusqu'à ${REQUEST_TIMEOUT / 1000}s)`)
+				.send(`Ping ? *Cela peut durer jusqu'à ${REQUEST_TIMEOUT / 1000}s.*`)
 				.catch(noop);
 
 			if (!pingMessage) {
