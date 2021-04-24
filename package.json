@@ -7,7 +7,7 @@
 		"build": "rimraf build/ && tsc -p tsconfig.prod.json",
 		"start": "node -r source-map-support/register -r dotenv/config .",
 		"dev": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"yarn ts-node -r dotenv/config src/index.ts\"",
-		"lint": "eslint src test --ext ts",
+		"lint": "eslint src --ext ts",
 		"format": "yarn lint --fix",
 		"test": "jest --testTimeout=10000 --detectOpenHandles --force-exit"
 	},

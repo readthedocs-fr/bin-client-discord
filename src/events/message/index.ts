@@ -3,9 +3,8 @@ import { extname } from "path";
 import { URL } from "url";
 
 import { Client, Event } from "../../classes";
-import { createBin, processContent, sendBinEmbed } from "../../helpers";
-import { request } from "../../helpers/request";
-import { extensions } from "../../misc/extensions";
+import { createBin, processContent, request, sendBinEmbed } from "../../helpers";
+import { extensions } from "../../misc";
 
 const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 const ORIGIN_URL = new URL(process.env.BIN_URL!).origin;
