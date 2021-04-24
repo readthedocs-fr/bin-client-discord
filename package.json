@@ -7,7 +7,7 @@
 		"build": "rimraf build/ && tsc -p tsconfig.prod.json",
 		"start": "node -r source-map-support/register -r dotenv/config .",
 		"dev": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"yarn ts-node -r dotenv/config src/index.ts\"",
-		"lint": "eslint src test --ext ts",
+		"lint": "eslint src --ext ts",
 		"format": "yarn lint --fix",
 		"test": "jest --testTimeout=10000 --detectOpenHandles --force-exit"
 	},
@@ -17,31 +17,32 @@
 		"node": ">=15.0.0"
 	},
 	"dependencies": {
+		"@typescord/form-data": "^3.0.3",
 		"discord.js": "^12.5.3",
 		"got": "^11.8.2",
 		"source-map-support": "^0.5.19"
 	},
 	"devDependencies": {
 		"@types/jest": "^26.0.22",
-		"@types/node": "^14.14.37",
-		"@typescript-eslint/eslint-plugin": "^4.20.0",
-		"@typescript-eslint/parser": "^4.20.0",
+		"@types/node": "^14.14.41",
+		"@typescript-eslint/eslint-plugin": "^4.22.0",
+		"@typescript-eslint/parser": "^4.22.0",
 		"dotenv": "^8.2.0",
-		"eslint": "^7.23.0",
+		"eslint": "^7.25.0",
 		"eslint-config-airbnb-typescript": "^12.3.1",
-		"eslint-config-prettier": "^8.1.0",
+		"eslint-config-prettier": "^8.3.0",
 		"eslint-import-resolver-node": "^0.3.4",
 		"eslint-plugin-import": "^2.22.1",
 		"eslint-plugin-json": "^2.1.2",
-		"eslint-plugin-prettier": "^3.3.1",
+		"eslint-plugin-prettier": "^3.4.0",
 		"eslint-plugin-simple-import-sort": "^7.0.0",
 		"jest": "^26.6.3",
 		"nodemon": "^2.0.7",
 		"prettier": "^2.2.1",
 		"rimraf": "^3.0.2",
-		"ts-jest": "^26.5.4",
+		"ts-jest": "^26.5.5",
 		"ts-node": "^9.1.1",
-		"typescript": "^4.2.3"
+		"typescript": "^4.2.4"
 	},
 	"jest": {
 		"preset": "ts-jest",

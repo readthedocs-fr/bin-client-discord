@@ -1,6 +1,6 @@
 import { Collection, Message, MessageAttachment, MessageEmbed, Snowflake } from "discord.js";
 
-import { sendBinEmbed } from "../../src/helpers";
+import { sendBinEmbed } from "..";
 
 const cdnLink = "https://cdn.discordapp.com/attachments/0/0/";
 
@@ -28,6 +28,8 @@ class MockMessage {
 	public readonly awaitReactions = jest.fn(
 		async () => new Collection<Snowflake, { message: MockMessage }>([["0", { message: this }]]),
 	);
+
+	public readonly deletable = true;
 
 	public readonly delete = asyncFn();
 

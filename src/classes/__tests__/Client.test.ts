@@ -1,4 +1,4 @@
-import { Client } from "../../src/classes";
+import { Client } from "..";
 
 describe(Client.prototype.init, () => {
 	it("should throw error if the env variables are invalid", () => {
