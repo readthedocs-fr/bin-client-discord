@@ -1,15 +1,15 @@
 import { GuildChannel, Message, MessageEmbed } from "discord.js";
-import got from "got";
 import { extname } from "path";
 import { URL } from "url";
 
 import { Client, Event } from "../../classes";
 import { createBin, processContent, sendBinEmbed } from "../../helpers";
 import { extensions } from "../../misc/extensions";
+import { request } from "../../misc/request";
 
 const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 const ORIGIN_URL = new URL(process.env.BIN_URL!).origin;
-const TIMEOUT = Number(process.env.MAX_TIMEOUT_MS);
+const REQUEST_TIMEOUT = parseInt(process.env.REQUEST_TIMEOUT!, 10);
 
 const noop = (): undefined => undefined;
 
@@ -31,21 +31,14 @@ export default class MessageEvent extends Event {
 			)
 		) {
 			const pingMessage = await message.channel
-				.send(`Ping ? (Cela peut prendre jusqu'à ${TIMEOUT / 1000}s)`)
+				.send(`Ping ? (Cela peut durer jusqu'à ${REQUEST_TIMEOUT / 1000}s)`)
 				.catch(noop);
 
 			if (!pingMessage) {
 				return;
 			}
 
-			const binHealth = await got(`${ORIGIN_URL}/health`, {
-				timeout: TIMEOUT,
-				retry: {
-					limit: 2,
-					statusCodes: [500, 502, 503, 504, 521, 522, 524],
-					errorCodes: ["ECONNRESET", "EADDRINUSE", "ECONNREFUSED", "EPIPE", "ENETUNREACH", "EAI_AGAIN"],
-				},
-			}).catch(noop);
+			const binHealth = await request(`${ORIGIN_URL}/health`).catch(noop);
 
 			const embed = new MessageEmbed()
 				.setColor(binHealth ? 0x2ab533 : 0xf33030)
@@ -74,7 +67,7 @@ export default class MessageEvent extends Event {
 		});
 
 		if (file) {
-			const code = await got(file.url, { http2: true }).text().catch(noop);
+			const code = await request(file.url, { timeout: undefined }).text().catch(noop);
 
 			const processed =
 				message.content.split("\n", MAX_LINES).length === MAX_LINES
