@@ -25,7 +25,7 @@ describe(processContent, () => {
 				`see : \`\`\`js\nthis\nis\nmulti\nline !\`\`\` \`\`\`${"and this is big\n".repeat(4097)}\`\`\``,
 				MAX_LINES,
 			),
-		).toEqual(expect.stringMatching(`see : ${binUrl("js")} \\[Erreur [0-9]+ : .+\\.\\]`));
+		).toEqual(expect.stringMatching(`see : ${binUrl("js")} \\[Err(eu|o)r( [0-9]+ )?: .+\\.?\\]`));
 	});
 
 	it("should return undefined if there are no changes", async () => {
