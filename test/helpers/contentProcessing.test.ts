@@ -16,6 +16,7 @@ describe(processContent, () => {
 	beforeEach(() => {
 		jest.resetModules();
 		process.env.BIN_URL = "http://localhost:8012/new";
+		process.env.MAX_TIMEOUT_MS = "5000";
 		console.error = consoleError;
 	});
 

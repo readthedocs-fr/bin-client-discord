@@ -9,7 +9,7 @@ describe(BinError, () => {
 	it("should return the correct object if the error exists", () => {
 		const error = new BinError("hey", 400);
 
-		expect(error.message).toEqual(errors[400]);
+		expect(error.message).toEqual(`Erreur 400 : ${errors[400]}.`);
 		expect(error.code).toEqual(400);
 	});
 
