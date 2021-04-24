@@ -116,7 +116,7 @@ export async function processContent(source: string, maxLines: number): Promise<
 					.catch((e: Error) => {
 						errors++;
 						// log if the error is critical.
-						if (!(e instanceof BinError) || (e.code >= 400 && e.code <= 408) || e.code >= 500) {
+						if (!(e instanceof BinError) || [400, 403, 404, 405].includes(e.code) || e.code >= 500) {
 							logError(e);
 						}
 						return (): string => `[${e}]`;
