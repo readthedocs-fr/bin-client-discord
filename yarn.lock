@@ -6087,6 +6087,7 @@ __metadata:
     jest: ^26.6.3
     nodemon: ^2.0.7
     prettier: ^2.2.1
+    rimraf: ^3.0.2
     source-map-support: ^0.5.19
     ts-jest: ^26.5.4
     ts-node: ^9.1.1
