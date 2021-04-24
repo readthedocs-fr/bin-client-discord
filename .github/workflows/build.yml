@@ -1,13 +1,13 @@
-# This workflow will run tests on every push or pull request and lint using ESLint.
+# This workflow will build the project in order to check if the current code is correct, following by running unit tests in order to check if everything works as intended.
 
-name: Continuous Integration
+name: Build & Unit Tests
 
 on:
     push:
-        paths-ignore: ["*.{md,txt}", LICENSE, .*config, .vscode]
+        paths: [src, "*.json"]
         tags-ignore: ["*"]
     pull_request:
-        paths-ignore: ["*.{md,txt}", LICENSE, .*, "!.github/workflows"]
+        paths: [src, "*.json"]
 
 jobs:
     build:
@@ -26,9 +26,6 @@ jobs:
 
             - name: Build
               run: yarn build --noEmit
-
-            - name: Lint with ESLint
-              run: yarn lint
 
             - name: Run tests
               run: |
