@@ -29,13 +29,20 @@ export default class MessageEvent extends Event {
 				message.content.trim().toLowerCase(),
 			)
 		) {
-			const pingMessage = await message.channel.send("Ping ?").catch(noop);
+			const pingMessage = await message.channel.send("Ping ? (Cela peut prendre jusqu'à ").catch(noop);
 
 			if (!pingMessage) {
 				return;
 			}
 
-			const binHealth = await got(`${ORIGIN_URL}/health`).catch(noop);
+			const binHealth = await got(`${ORIGIN_URL}/health`, {
+				timeout: Number(process.env.MAX_TIMEOUT_MS),
+				retry: {
+					limit: 2,
+					statusCodes: [500, 502, 503, 504, 521, 522, 524],
+					errorCodes: ["ECONNRESET", "EADDRINUSE", "ECONNREFUSED", "EPIPE", "ENETUNREACH", "EAI_AGAIN"],
+				},
+			}).catch(noop);
 
 			const embed = new MessageEmbed()
 				.setColor(binHealth ? 0x2ab533 : 0xf33030)

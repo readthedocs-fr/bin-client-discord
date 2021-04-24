@@ -1,4 +1,4 @@
-import got, { HTTPError } from "got";
+import got, { HTTPError, TimeoutError } from "got";
 
 import { BinError } from "../misc/BinError";
 
@@ -11,9 +11,8 @@ interface BinOptions {
 	maxUsage?: number;
 }
 export async function createBin({ code, language, lifeTime, maxUsage }: BinOptions): Promise<string> {
-	const binUrl = process.env.BIN_URL!;
 	return got
-		.post(binUrl, {
+		.post(process.env.BIN_URL!, {
 			http2: true,
 			followRedirect: false,
 			form: {
@@ -22,12 +21,19 @@ export async function createBin({ code, language, lifeTime, maxUsage }: BinOptio
 				lifetime: lifeTime || 0,
 				maxusage: maxUsage ?? 0,
 			},
+			timeout: Number(process.env.MAX_TIMEOUT_MS),
+			retry: {
+				limit: 2,
+				methods: ["POST"],
+				statusCodes: [500, 502, 503, 504, 521, 522, 524],
+				errorCodes: ["ECONNRESET", "EADDRINUSE", "ECONNREFUSED", "EPIPE", "ENETUNREACH", "EAI_AGAIN"],
+			},
 		})
 		.then(({ headers }) => headers.location!)
-		.catch((e: Error) => {
-			if (e instanceof HTTPError) {
-				throw new BinError(e.message, e.response.statusCode);
+		.catch((error: Error) => {
+			if (error instanceof HTTPError || error instanceof TimeoutError) {
+				throw new BinError(error.message, error instanceof HTTPError ? error.response.statusCode : 408);
 			}
-			throw e;
+			throw error;
 		});
 }
