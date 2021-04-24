@@ -1,6 +1,6 @@
-# This workflow will build the project in order to check if the current code is correct, following by running unit tests in order to check if everything works as intended.
+# This workflow will run linter in order to keep a consistent coding style.
 
-name: Build & Unit Tests
+name: Linter
 
 on:
     push:
@@ -24,11 +24,5 @@ jobs:
             - name: Install dependencies
               run: yarn install --immutable
 
-            - name: Build
-              run: yarn build --noEmit
-
-            - name: Run tests
-              run: |
-                  docker-compose -f rtdbin-docker-compose.yml up -d --build
-                  yarn test
-                  docker-compose -f rtdbin-docker-compose.yml down
+            - name: Run linter
+              run: yarn lint

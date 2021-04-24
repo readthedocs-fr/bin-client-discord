@@ -1,0 +1,34 @@
+# This workflow will build the project in order to check if the current code is correct, following by running unit tests in order to check if everything works as intended.
+
+name: Build & Unit Tests
+
+on:
+    push:
+        paths: [src, "*.json"]
+        tags-ignore: ["*"]
+    pull_request:
+        paths: [src, "*.json"]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 15
+
+            - name: Install dependencies
+              run: yarn install --immutable
+
+            - name: Build
+              run: yarn build --noEmit
+
+            - name: Run tests
+              run: |
+                  docker-compose -f rtdbin-docker-compose.yml up -d --build
+                  yarn test
+                  docker-compose -f rtdbin-docker-compose.yml down
