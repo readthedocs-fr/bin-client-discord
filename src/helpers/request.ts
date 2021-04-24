@@ -2,6 +2,7 @@ import got from "got";
 
 export const request = got.extend({
 	http2: true,
+	followRedirect: false,
 	timeout: parseInt(process.env.REQUEST_TIMEOUT!, 10) || 5000,
 	retry: {
 		limit: 2,
