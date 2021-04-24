@@ -14,7 +14,6 @@ interface BinOptions {
 export async function createBin({ code, language, lifeTime, maxUsage }: BinOptions): Promise<string> {
 	return request
 		.post(process.env.BIN_URL!, {
-			...request,
 			followRedirect: false,
 			form: {
 				code: code.replace(TOKEN_REGEXP, "[DISCORD TOKEN DETECTED]"),
