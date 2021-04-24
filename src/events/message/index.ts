@@ -9,6 +9,7 @@ import { extensions } from "../../misc/extensions";
 
 const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 const ORIGIN_URL = new URL(process.env.BIN_URL!).origin;
+const TIMEOUT = Number(process.env.MAX_TIMEOUT_MS);
 
 const noop = (): undefined => undefined;
 
@@ -29,14 +30,16 @@ export default class MessageEvent extends Event {
 				message.content.trim().toLowerCase(),
 			)
 		) {
-			const pingMessage = await message.channel.send("Ping ? (Cela peut prendre jusqu'à ").catch(noop);
+			const pingMessage = await message.channel
+				.send(`Ping ? (Cela peut prendre jusqu'à ${TIMEOUT / 1000}s)`)
+				.catch(noop);
 
 			if (!pingMessage) {
 				return;
 			}
 
 			const binHealth = await got(`${ORIGIN_URL}/health`, {
-				timeout: Number(process.env.MAX_TIMEOUT_MS),
+				timeout: TIMEOUT,
 				retry: {
 					limit: 2,
 					statusCodes: [500, 502, 503, 504, 521, 522, 524],
