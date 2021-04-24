@@ -1,0 +1,28 @@
+# This workflow will run linter in order to keep a consistent coding style.
+
+name: Lint
+
+on:
+    push:
+        paths: [src, .prettier*, .eslint*, yarn.lock, .github/workflows]
+        tags-ignore: ["*"]
+    pull_request:
+        paths: [src, .prettier*, .eslint*, yarn.lock, .github/workflows]
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 15
+
+            - name: Install dependencies
+              run: yarn install --immutable
+
+            - name: Run linter
+              run: yarn lint
