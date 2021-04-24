@@ -7,7 +7,7 @@ on:
         paths-ignore: ["*.{md,txt}", LICENSE, .*config, .vscode]
         tags-ignore: ["*"]
     pull_request:
-        paths-ignore: ["*.{md,txt}", LICENSE, .*config, .vscode]
+        paths-ignore: ["*.{md,txt}", LICENSE, .*, '!.github']
 
 jobs:
     build:
