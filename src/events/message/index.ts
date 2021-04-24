@@ -67,7 +67,7 @@ export default class MessageEvent extends Event {
 		});
 
 		if (file) {
-			const code = await request(file.url, { timeout: undefined }).text().catch(noop);
+			const code = await request(file.url).text().catch(noop);
 
 			const processed =
 				message.content.split("\n", MAX_LINES).length === MAX_LINES
