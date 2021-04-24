@@ -36,24 +36,30 @@ export async function sendBinEmbed(
 
 	const botMessage = await message.channel.send({ embed, files }).catch(noop);
 
-	await waitMessage?.delete().catch(noop);
+	if (waitMessage?.deletable) {
+		await waitMessage.delete().catch(noop);
+	}
 
 	if (!botMessage) {
 		return;
 	}
 
-	await message.delete().catch(noop);
+	if (message.deletable) {
+		await message.delete().catch(noop);
+	}
 
 	await botMessage.react("🗑️");
 
 	const collector = await botMessage.awaitReactions(
-		({ emoji }: MessageReaction, { id }: User) => id === message.author.id && emoji.name === "🗑️",
-		{ max: 1, time: 20 * 1000 },
+		({ emoji }: MessageReaction, user: User) => user.id === message.author.id && emoji.name === "🗑️",
+		{ max: 1, time: 20000 },
 	);
 	if (collector.size === 0) {
 		await botMessage.reactions.removeAll().catch(noop);
 		return;
 	}
 
-	botMessage.delete().catch(noop);
+	if (botMessage.deletable) {
+		botMessage.delete().catch(noop);
+	}
 }
