@@ -1,6 +1,6 @@
 # This workflow will run linter in order to keep a consistent coding style.
 
-name: Linter
+name: Lint
 
 on:
     push:
@@ -10,7 +10,7 @@ on:
         paths: [src, "*.json"]
 
 jobs:
-    build:
+    lint:
         runs-on: ubuntu-latest
 
         steps:
