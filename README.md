@@ -5,6 +5,8 @@ blocks with snippets using [rtd-bin](https://github.com/readthedocs-fr/bin).
 
 ## Contribution
 
+After forking, do these commands:
+
 ```sh
 git clone https://github.com/<your_username>/bin-client-discord
 cd bin-client-discord
