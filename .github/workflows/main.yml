@@ -3,48 +3,35 @@
 name: Continuous Integration
 
 on:
-  push:
-    paths:
-      - '**.ts'
-      - package.json
-      - tsconfig.json
-      - tsconfig.prod.json
-      - rtdbin-docker-compose.yml
-      - jest.config.json
-      - '.github/workflows/**/*'
-  pull_request:
-    paths:
-      - '**.ts'
-      - package.json
-      - tsconfig.json
-      - tsconfig.prod.json
-      - rtdbin-docker-compose.yml
-      - jest.config.json
-      - '.github/workflows/**/*'
+    push:
+        paths-ignore: ["*.{md,txt}", LICENSE, .*config, .vscode]
+        tags-ignore: ["*"]
+    pull_request:
+        paths-ignore: ["*.{md,txt}", LICENSE, .*config, .vscode]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
+        steps:
+            - uses: actions/checkout@v2
 
-      - name: Setup NodeJS
-        uses: actions/setup-node@v2
-        with:
-          node-version: '15'
+            - name: Setup Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 15
 
-      - name: Install dependencies
-        run: npm i
+            - name: Install dependencies
+              run: yarn install --immutable
 
-      - name: Lint with ESLint
-        run: npm run lint
+            - name: Build
+              run: yarn build --noEmit
 
-      - name: Run tests
-        run: |
-          docker-compose -f rtdbin-docker-compose.yml up -d --build
-          npm run test
-          docker-compose -f rtdbin-docker-compose.yml down
+            - name: Lint with ESLint
+              run: yarn lint
 
-      - name: Build
-        run: npm run build -- --noEmit
+            - name: Run tests
+              run: |
+                  docker-compose -f rtdbin-docker-compose.yml up -d --build
+                  yarn test
+                  docker-compose -f rtdbin-docker-compose.yml down
