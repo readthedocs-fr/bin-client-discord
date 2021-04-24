@@ -1,7 +1,7 @@
 import { HTTPError, TimeoutError } from "got";
 
 import { BinError } from "../misc/BinError";
-import { request } from "../misc/request";
+import { request } from "./request";
 
 const TOKEN_REGEXP = /[a-z\d]{24}\.[a-z\d]{6}\.[\w-]{27}|mfa\.[\w-]{84}/gi;
 

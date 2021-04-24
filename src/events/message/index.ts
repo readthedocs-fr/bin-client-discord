@@ -4,12 +4,12 @@ import { URL } from "url";
 
 import { Client, Event } from "../../classes";
 import { createBin, processContent, sendBinEmbed } from "../../helpers";
+import { request } from "../../helpers/request";
 import { extensions } from "../../misc/extensions";
-import { request } from "../../misc/request";
 
 const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
 const ORIGIN_URL = new URL(process.env.BIN_URL!).origin;
-const REQUEST_TIMEOUT = parseInt(process.env.REQUEST_TIMEOUT!, 10);
+const REQUEST_TIMEOUT = parseInt(process.env.REQUEST_TIMEOUT!, 10) || 5000;
 
 const noop = (): undefined => undefined;
 
