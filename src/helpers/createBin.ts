@@ -1,6 +1,7 @@
-import got, { HTTPError } from "got";
+import { HTTPError, TimeoutError } from "got";
 
 import { BinError } from "../misc/BinError";
+import { request } from "./request";
 
 const TOKEN_REGEXP = /[a-z\d]{24}\.[a-z\d]{6}\.[\w-]{27}|mfa\.[\w-]{84}/gi;
 
@@ -11,11 +12,8 @@ interface BinOptions {
 	maxUsage?: number;
 }
 export async function createBin({ code, language, lifeTime, maxUsage }: BinOptions): Promise<string> {
-	const binUrl = process.env.BIN_URL!;
-	return got
-		.post(binUrl, {
-			http2: true,
-			followRedirect: false,
+	return request
+		.post(process.env.BIN_URL!, {
 			form: {
 				code: code.replace(TOKEN_REGEXP, "[DISCORD TOKEN DETECTED]"),
 				lang: language || "txt",
@@ -24,10 +22,10 @@ export async function createBin({ code, language, lifeTime, maxUsage }: BinOptio
 			},
 		})
 		.then(({ headers }) => headers.location!)
-		.catch((e: Error) => {
-			if (e instanceof HTTPError) {
-				throw new BinError(e.message, e.response.statusCode);
+		.catch((error: Error) => {
+			if (error instanceof HTTPError || error instanceof TimeoutError) {
+				throw new BinError(error.message, error instanceof HTTPError ? error.response.statusCode : 408);
 			}
-			throw e;
+			throw error;
 		});
 }
