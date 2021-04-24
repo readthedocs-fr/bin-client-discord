@@ -4,10 +4,10 @@ name: Build & Unit Tests
 
 on:
     push:
-        paths: [src, test, "tsconfig.*json"]
+        paths: [src, "*.json"]
         tags-ignore: ["*"]
     pull_request:
-        paths: [src, test, "tsconfig.*json"]
+        paths: [src, "*.json"]
 
 jobs:
     build:
