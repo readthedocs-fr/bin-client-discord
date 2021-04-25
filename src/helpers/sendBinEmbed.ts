@@ -2,8 +2,7 @@ import { Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, 
 
 const noop = (): undefined => undefined;
 
-// https://www.reddit.com/r/discordapp/comments/aflp3p/the_truth_about_discord_file_upload_limits/
-const MAX_FILE_SIZE = 8_388_119;
+const MAX_ATTACHMENTS_SIZE = 8_388_381;
 
 export async function sendBinEmbed(
 	message: Message,
@@ -25,7 +24,7 @@ export async function sendBinEmbed(
 	if (attachments) {
 		let totalSize = 0;
 		for (const attachment of attachments.values()) {
-			if (totalSize + attachment.size > MAX_FILE_SIZE) {
+			if (totalSize + attachment.size > MAX_ATTACHMENTS_SIZE) {
 				continue;
 			}
 
