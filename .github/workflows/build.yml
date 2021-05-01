@@ -4,10 +4,10 @@ name: Build & Unit Tests
 
 on:
     push:
-        paths: [src, package.json, tsconfig*, yarn.lock, .github/workflows, rtdbin-docker-compose.yml]
+        paths: [src/**, package.json, tsconfig*, yarn.lock, .github/workflows, rtdbin-docker-compose.yml]
         tags-ignore: ["*"]
     pull_request:
-        paths: [src, package.json, tsconfig*, yarn.lock, .github/workflows, rtdbin-docker-compose.yml]
+        paths: [src/**, package.json, tsconfig*, yarn.lock, .github/workflows, rtdbin-docker-compose.yml]
 
 jobs:
     build:
