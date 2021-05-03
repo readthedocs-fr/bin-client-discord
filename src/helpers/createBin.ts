@@ -1,5 +1,5 @@
-import { FormData } from "@typescord/form-data";
-import { HTTPError, TimeoutError } from "got";
+import { FormData } from "@typescord/famfor";
+import { Headers, HTTPError, TimeoutError } from "got";
 
 import { BinError } from "../misc/BinError";
 import { request } from "./request";
@@ -15,18 +15,15 @@ interface BinOptions {
 
 export async function createBin({ code, language, lifeTime, maxUses }: BinOptions): Promise<string> {
 	const fd = new FormData();
-	fd.set("code", code.replace(TOKEN_REGEXP, "[DISCORD TOKEN DETECTED]"));
-	fd.set("lang", language || "text");
-	fd.set("lifetime", (lifeTime || 0).toString());
-	fd.set("maxusage", (maxUses ?? 0).toString());
 
-	const contentLength = await fd.getComputedLength();
+	fd.append("lifetime", (lifeTime || 0).toString());
+	fd.append("maxusage", (maxUses ?? 0).toString());
+	fd.append("code", code.replace(TOKEN_REGEXP, "[DISCORD TOKEN DETECTED]"));
+	fd.append("lang", language || "text");
+
 	return request
 		.post(process.env.BIN_URL!, {
-			headers: {
-				"Content-Type": fd.headers["Content-Type"],
-				"Content-Length": contentLength !== undefined ? contentLength.toString() : undefined,
-			},
+			headers: (fd.headers as unknown) as Headers,
 			body: fd.stream,
 		})
 		.then(({ headers }) => headers.location!)

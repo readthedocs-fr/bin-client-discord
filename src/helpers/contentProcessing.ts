@@ -73,10 +73,6 @@ function insertAt(source: string, insertion: string, start: number, end = start)
 }
 
 export async function processContent(source: string, maxLines: number): Promise<string | undefined> {
-	if (!source.trim()) {
-		return;
-	}
-
 	const codes = new Map<string, (ext?: string) => string>();
 	let final = source;
 

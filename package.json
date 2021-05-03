@@ -17,7 +17,7 @@
 		"node": ">=15.0.0"
 	},
 	"dependencies": {
-		"@typescord/form-data": "^3.0.3",
+		"@typescord/famfor": "^0.1.2",
 		"discord.js": "^12.5.3",
 		"got": "^11.8.2",
 		"source-map-support": "^0.5.19"
