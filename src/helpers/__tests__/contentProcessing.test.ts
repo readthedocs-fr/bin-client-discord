@@ -6,7 +6,7 @@ const consoleError = console.error;
 
 describe(processContent, () => {
 	it("should replace the code with undefined when an error occurs since there are no changes", async () => {
-		process.env.BIN_URL = "https://binn.readthedocs.fr/new";
+		process.env.BIN_URL = "https://binn.readthedocs.fr/";
 		console.error = jest.fn();
 
 		expect(await processContent("see : `this\nis\nmultiline !`", MAX_LINES)).toBeUndefined();
@@ -46,6 +46,17 @@ describe(processContent, () => {
 		const results = (await processContent("```python\na\nb``` ```py\na\nb```", 1))?.split(" ", 2);
 		expect(results).not.toBeUndefined();
 		expect(results?.[0]).toEqual(`${results?.[1].slice(0, -3)}python>`);
+	});
+
+	it("should works with utf8", async () => {
+		console.error = jest.fn();
+		const results = await processContent(
+			// eslint-disable-next-line max-len
+			"```Ḽơᶉëᶆ ȋṕšᶙṁ ḍỡḽǭᵳ ʂǐť ӓṁệẗ, ĉṓɲṩḙċťᶒțûɾ ấɖḯƥĭṩčįɳġ ḝłįʈ, șếᶑ ᶁⱺ ẽḭŭŝḿꝋď ṫĕᶆᶈṓɍ ỉñḉīḑȋᵭṵńť ṷŧ ḹẩḇőꝛế éȶ đꝍꞎôꝛȇ ᵯáꞡᶇā ąⱡîɋṹẵ.``` ```py\ná'bç'dé'f'g'h'k```",
+			1,
+		);
+		expect(console.error).not.toBeCalled();
+		expect(results).toEqual(expect.stringMatching(`${binUrl()} ${binUrl("py")}`));
 	});
 
 	it("should make the corrects changes", async () => {
