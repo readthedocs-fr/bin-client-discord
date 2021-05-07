@@ -6,7 +6,7 @@ const consoleError = console.error;
 
 describe(processContent, () => {
 	it("should replace the code with undefined when an error occurs since there are no changes", async () => {
-		process.env.BIN_URL = "https://binn.readthedocs.fr/";
+		process.env.BIN_URL = "https://binn.readthedocs.fr/new";
 		console.error = jest.fn();
 
 		expect(await processContent("see : `this\nis\nmultiline !`", MAX_LINES)).toBeUndefined();
