@@ -48,7 +48,7 @@ describe(processContent, () => {
 		expect(results?.[0]).toEqual(`${results?.[1].slice(0, -3)}python>`);
 	});
 
-	it("should works with utf8", async () => {
+	it("should work with utf8", async () => {
 		console.error = jest.fn();
 		const results = await processContent(
 			// eslint-disable-next-line max-len
