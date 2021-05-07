@@ -26,7 +26,7 @@ export default class MessageEvent extends Event {
 
 		if (
 			[`<@!${this.client.user!.id}> ping`, `<@${this.client.user!.id}> ping`].includes(
-				message.content.trim().toLowerCase(),
+				message.content.toLowerCase(),
 			)
 		) {
 			const pingMessage = await message.channel
@@ -37,7 +37,7 @@ export default class MessageEvent extends Event {
 				return;
 			}
 
-			const binHealth = await request(`${ORIGIN_URL}/health`).catch(noop);
+			const binHealth = await request.head(`${ORIGIN_URL}/health`).catch(noop);
 
 			const embed = new MessageEmbed()
 				.setColor(binHealth ? 0x2ab533 : 0xf33030)
@@ -55,61 +55,54 @@ export default class MessageEvent extends Event {
 		}
 
 		const file = message.attachments.find((attachment) => {
-			if (!attachment.name || attachment.width) {
+			if (!attachment.name || attachment.width || attachment.size === 0) {
 				return false;
 			}
 
-			const fileExtension = extname(attachment.name).slice(1);
-			const language = fileExtension || "txt";
+			const fileExtension = extname(attachment.name).slice(1).toLowerCase();
 
-			return language === "txt" || extensions.has(language);
+			return ["txt", ""].includes(fileExtension) || extensions.has(fileExtension);
 		});
 
 		if (file) {
-			const code = await request(file.url).text().catch(noop);
+			message.attachments.delete(file.id);
 
 			const processed =
-				message.content.split("\n", MAX_LINES).length === MAX_LINES
+				message.content.split("\n").length > MAX_LINES
 					? await processContent(message.content, MAX_LINES)
 					: undefined;
 
-			const language = extname(file.name!).slice(1);
-			const content = code?.trim() ? await createBin({ code, language }).catch((e: Error) => e) : undefined;
+			try {
+				const content = await createBin({
+					code: await request(file.url).text(),
+					language: extname(file.name!).slice(1),
+				});
 
-			if (!content && !processed) {
-				return;
-			}
-
-			if (content instanceof Error) {
-				const errorEmbed = new MessageEmbed({ title: content.toString() }).setDescription(
+				sendBinEmbed(
+					message,
+					processed || message.content,
+					content ? (embed): MessageEmbed => embed.addField("📁 Pièce jointe", content) : undefined,
+					message.attachments.size > 0 ? message.attachments : undefined,
+				);
+			} catch (error) {
+				const errorEmbed = new MessageEmbed({ title: error.toString() });
+				errorEmbed.setDescription(
 					// eslint-disable-next-line max-len
 					`Cependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent).\n\nNous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${ORIGIN_URL} (s'il est hors-ligne, utilisez d'autres alternatives comme https://paste.artemix.org/).`,
 				);
-
-				await message.channel.send(errorEmbed).catch(noop);
-
-				return;
+				message.channel.send(errorEmbed).catch(noop);
 			}
-
-			const otherAttachments = message.attachments.filter((attachment) => attachment.id !== file.id);
-
-			await sendBinEmbed(
-				message,
-				processed || message.content.trim(),
-				content ? (embed): MessageEmbed => embed.addField("📁 Pièce jointe", content) : undefined,
-				otherAttachments.size > 0 ? otherAttachments : undefined,
-			);
 
 			return;
 		}
 
-		const lines = message.content.split("\n", MAX_LINES).length;
+		const lines = message.content.split("\n").length;
 
 		if (lines < MAX_LINES) {
 			return;
 		}
 
-		const processed = await processContent(message.content, MAX_LINES).catch(noop);
+		const processed = await processContent(message.content, MAX_LINES);
 
 		if (processed) {
 			sendBinEmbed(

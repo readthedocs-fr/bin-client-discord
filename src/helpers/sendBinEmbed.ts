@@ -51,10 +51,10 @@ export async function sendBinEmbed(
 
 	const collector = await botMessage.awaitReactions(
 		({ emoji }: MessageReaction, user: User) => user.id === message.author.id && emoji.name === "🗑️",
-		{ max: 1, time: 20000 },
+		{ max: 1, time: 20_000 },
 	);
 	if (collector.size === 0) {
-		await botMessage.reactions.removeAll().catch(noop);
+		botMessage.reactions.removeAll().catch(noop);
 		return;
 	}
 

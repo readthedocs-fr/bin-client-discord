@@ -849,13 +849,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^26.0.22":
-  version: 26.0.22
-  resolution: "@types/jest@npm:26.0.22"
+"@types/jest@npm:^26.0.23":
+  version: 26.0.23
+  resolution: "@types/jest@npm:26.0.23"
   dependencies:
     jest-diff: ^26.0.0
     pretty-format: ^26.0.0
-  checksum: 4c98ed058522f6cc74bcb47b8b7b104b77b2d4e42e087171f3d2d3ae5338c21f43ec26f2a186bc229c1bd72c3f776ad07faba837f0ec27f22cf94e154516c0b3
+  checksum: a015676b78bdc51be6f6315acef10d9106ea8064e3e49143bca3c75b834b61285b45c5f5ccfd049a80107f1e2869a9183cdb5be85816c073ea8dd05852fafdc6
   languageName: node
   linkType: hard
 
@@ -882,10 +882,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^14.14.41":
+"@types/node@npm:*":
   version: 14.14.41
   resolution: "@types/node@npm:14.14.41"
   checksum: 37dfb639644c8ee9b9846106834983f590d494b855e74645a4f169ea24199f7559366d25f6e72e83ba940b59eb6370e002bd53963d098d6d9fdf935a37011417
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^15.0.1":
+  version: 15.0.1
+  resolution: "@types/node@npm:15.0.1"
+  checksum: 4e4fb69394efb224272ad7c6b6dc16a381b97e46a8f3c21d33fec51ef13a4d635f571b446d127eae333ea6a763f304b787f4b3f73e24e1f3b05a21b481900dfb
   languageName: node
   linkType: hard
 
@@ -935,12 +942,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescord/form-data@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "@typescord/form-data@npm:3.0.3"
+"@typescord/famfor@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@typescord/famfor@npm:0.1.2"
   dependencies:
-    mime-types: 2.1.29
-  checksum: 6ccc4df6c3a2c10fbed1ee42511945c20da7c2915ec94cc963bdc6350a474fe917a0022143171d546cfd0aed1dbc6f12abb143459bb29e5320f33bc153355ecd
+    mime-types: 2.1.30
+  checksum: 4be34831a38913f74008e60d0589f10cc68f4731a72b29b843c44476df4b6dc534d3c72d8c283df42c0caf7f8d373c1abb33d9cc37964afa4458400b55777224
   languageName: node
   linkType: hard
 
@@ -5037,13 +5044,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-db@npm:1.46.0":
-  version: 1.46.0
-  resolution: "mime-db@npm:1.46.0"
-  checksum: 4e137ac502ca5ba6c583e552c5fa6abd0c2157592f647824ba7246b771eb42c65c2a1816fc52b27afdbb88a026127f1d5fba354f9dcde591b3b464be07c3d27e
-  languageName: node
-  linkType: hard
-
 "mime-db@npm:1.47.0":
   version: 1.47.0
   resolution: "mime-db@npm:1.47.0"
@@ -5051,16 +5051,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-types@npm:2.1.29":
-  version: 2.1.29
-  resolution: "mime-types@npm:2.1.29"
-  dependencies:
-    mime-db: 1.46.0
-  checksum: 744d72b2a24c64d2aacc1ead86bfc827c2c4f1bb6f3b4bf6d8684b82f5ddd0b75a5c0eff128a888c09080f9ad7979400b64a697889690fca3c42de80c8f5e187
-  languageName: node
-  linkType: hard
-
-"mime-types@npm:^2.1.12, mime-types@npm:~2.1.19":
+"mime-types@npm:2.1.30, mime-types@npm:^2.1.12, mime-types@npm:~2.1.19":
   version: 2.1.30
   resolution: "mime-types@npm:2.1.30"
   dependencies:
@@ -6094,9 +6085,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "readthebin@workspace:."
   dependencies:
-    "@types/jest": ^26.0.22
-    "@types/node": ^14.14.41
-    "@typescord/form-data": ^3.0.3
+    "@types/jest": ^26.0.23
+    "@types/node": ^15.0.1
+    "@typescord/famfor": ^0.1.2
     "@typescript-eslint/eslint-plugin": ^4.22.0
     "@typescript-eslint/parser": ^4.22.0
     discord.js: ^12.5.3
