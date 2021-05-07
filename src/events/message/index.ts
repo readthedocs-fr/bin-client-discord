@@ -75,7 +75,7 @@ export default class MessageEvent extends Event {
 			try {
 				const content = await createBin({
 					code: await request(file.url).text(),
-					language: extname(file.name!).slice(1),
+					filename: file.name!,
 				});
 
 				sendBinEmbed(

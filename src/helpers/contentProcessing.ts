@@ -106,7 +106,7 @@ export async function processContent(source: string, maxLines: number): Promise<
 			let bin = codes.get(result.content.trim())?.(result.lang);
 
 			if (!bin) {
-				const link = await createBin({ code: result.content, language: result.lang })
+				const link = await createBin({ code: result.content, filename: `..${result.lang || "txt"}` })
 					.then((url) => (ext = "txt"): string => `<${url.replace(extname(url), `.${ext}`)}>`)
 					// eslint-disable-next-line @typescript-eslint/no-loop-func
 					.catch((e: Error) => {
