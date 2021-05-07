@@ -48,6 +48,17 @@ describe(processContent, () => {
 		expect(results?.[0]).toEqual(`${results?.[1].slice(0, -3)}python>`);
 	});
 
+	it("should work with utf8", async () => {
+		console.error = jest.fn();
+		const results = await processContent(
+			// eslint-disable-next-line max-len
+			"```Ḽơᶉëᶆ ȋṕšᶙṁ ḍỡḽǭᵳ ʂǐť ӓṁệẗ, ĉṓɲṩḙċťᶒțûɾ ấɖḯƥĭṩčįɳġ ḝłįʈ, șếᶑ ᶁⱺ ẽḭŭŝḿꝋď ṫĕᶆᶈṓɍ ỉñḉīḑȋᵭṵńť ṷŧ ḹẩḇőꝛế éȶ đꝍꞎôꝛȇ ᵯáꞡᶇā ąⱡîɋṹẵ.``` ```py\ná'bç'dé'f'g'h'k```",
+			1,
+		);
+		expect(console.error).not.toBeCalled();
+		expect(results).toEqual(expect.stringMatching(`${binUrl()} ${binUrl("py")}`));
+	});
+
 	it("should make the corrects changes", async () => {
 		expect(await processContent("see : `this\nis\nmultiline !`", MAX_LINES)).toEqual(
 			expect.stringMatching(new RegExp(`see : ${binUrl()}`)),
