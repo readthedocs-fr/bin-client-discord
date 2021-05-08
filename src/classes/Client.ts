@@ -95,11 +95,10 @@ export class Client extends DiscordClient {
 
 	private async loadEvent(eventPath: string, name: string): Promise<void> {
 		// eslint-disable-next-line @typescript-eslint/naming-convention
-		const { default: EventClass } = await import(eventPath);
-		const event: Event = new EventClass(this);
+		const { default: event }: { default: Event } = await import(eventPath);
 
-		this.on(event.event, event.listener.bind(event));
+		this.on(event.name as string, event.listener.bind({ client: this }));
 
-		console.info(`Event ${name} (${event.event}) loaded.`);
+		console.info(`Event ${name} (${event.name}) loaded.`);
 	}
 }
