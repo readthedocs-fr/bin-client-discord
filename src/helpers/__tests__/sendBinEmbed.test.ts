@@ -19,6 +19,8 @@ class MockMessage {
 
 	public readonly channel = {
 		send: jest.fn(async () => this),
+		startTyping: asyncFn(),
+		stopTyping: jest.fn(() => {}),
 	};
 
 	public readonly reactions = {
@@ -53,15 +55,29 @@ describe(sendBinEmbed, () => {
 			attachments.clone().set("3", new MessageAttachment(`${cdnLink}4.jpg`, "4.jpg", { size: 1e6 })),
 		);
 
-		expect(message.channel.send).toBeCalledTimes(2);
-		expect(message.channel.send).toBeCalledWith("Transformation du message en cours...");
-		expect(message.channel.send).toHaveBeenLastCalledWith({
+		expect(message.channel.startTyping).toBeCalledTimes(1);
+		expect(message.channel.stopTyping).not.toBeCalled();
+		expect(message.channel.send).toBeCalledTimes(1);
+		expect(message.channel.send).toBeCalledWith({
 			embed: new MessageEmbed({ description: "hey" })
 				.setAuthor(message.member!.displayName, message.author.displayAvatarURL())
 				.setTimestamp(message.createdAt)
 				.addField("this", "is", true),
 			files: attachments.array(),
 		});
+	});
+
+	it("should start and stop typing correctly", async () => {
+		const message = new MockMessage();
+		message.channel.send = jest.fn(async () => {
+			// eslint-disable-next-line @typescript-eslint/no-throw-literal
+			throw "Error";
+		});
+
+		await sendBinEmbed((message as unknown) as Message, "hey");
+
+		expect(message.channel.startTyping).toBeCalledTimes(1);
+		expect(message.channel.stopTyping).toBeCalledTimes(1);
 	});
 
 	it("should react with 🗑️", async () => {
@@ -80,10 +96,10 @@ describe(sendBinEmbed, () => {
 		expect(message.reactions.removeAll).not.toBeCalled();
 	});
 
-	it("should delete the right number of messages", async () => {
+	it("should delete the right messages", async () => {
 		const message = new MockMessage();
 		await sendBinEmbed((message as unknown) as Message, "hey");
 
-		expect(message.delete).toBeCalledTimes(3);
+		expect(message.delete).toBeCalledTimes(2);
 	});
 });

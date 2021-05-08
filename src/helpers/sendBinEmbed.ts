@@ -18,7 +18,7 @@ export async function sendBinEmbed(
 		extender(embed);
 	}
 
-	const waitMessage = await message.channel.send("Transformation du message en cours...").catch(noop);
+	message.channel.startTyping();
 	const files: MessageAttachment[] = [];
 
 	if (attachments) {
@@ -33,18 +33,14 @@ export async function sendBinEmbed(
 		}
 	}
 
-	const botMessage = await message.channel.send({ embed, files }).catch(noop);
-
-	if (waitMessage?.deletable) {
-		await waitMessage.delete().catch(noop);
-	}
+	const botMessage = await message.channel.send({ embed, files }).catch(() => message.channel.stopTyping());
 
 	if (!botMessage) {
 		return;
 	}
 
 	if (message.deletable) {
-		await message.delete().catch(noop);
+		message.delete().catch(noop);
 	}
 
 	await botMessage.react("🗑️");
