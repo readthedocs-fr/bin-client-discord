@@ -1,12 +1,16 @@
 import { Collection, Message, MessageAttachment, MessageEmbed, MessageReaction, Snowflake, User } from "discord.js";
 
+import { request } from "./request";
+
 const noop = (): undefined => undefined;
 
+const ADMIN_TOKEN = `Token ${process.env.BINS_TOKEN!}`;
 const MAX_ATTACHMENTS_SIZE = 8_388_381;
 
 export async function sendBinEmbed(
 	message: Message,
 	description: string,
+	binUrls?: string[],
 	extender?: (embed: MessageEmbed) => MessageEmbed,
 	attachments?: Collection<Snowflake, MessageAttachment>,
 ): Promise<void> {
@@ -36,7 +40,7 @@ export async function sendBinEmbed(
 	const botMessage = await message.channel.send({ embed, files }).catch(noop);
 
 	if (waitMessage?.deletable) {
-		await waitMessage.delete().catch(noop);
+		waitMessage.delete().catch(noop);
 	}
 
 	if (!botMessage) {
@@ -50,9 +54,15 @@ export async function sendBinEmbed(
 	await botMessage.react("🗑️");
 
 	const collector = await botMessage.awaitReactions(
-		({ emoji }: MessageReaction, user: User) => user.id === message.author.id && emoji.name === "🗑️",
-		{ max: 1, time: 20_000 },
+		(reaction: MessageReaction, user: User) => {
+			if (reaction.emoji.name !== "🗑️") {
+				return false;
+			}
+			return user === message.author || message.guild!.member(user)?.permissions.has("MANAGE_MESSAGES") || false;
+		},
+		{ max: 1, time: 30_000 },
 	);
+
 	if (collector.size === 0) {
 		botMessage.reactions.removeAll().catch(noop);
 		return;
@@ -60,5 +70,11 @@ export async function sendBinEmbed(
 
 	if (botMessage.deletable) {
 		botMessage.delete().catch(noop);
+	}
+
+	if (binUrls) {
+		for (const binUrl of binUrls) {
+			request.delete(binUrl, { headers: { Authorization: ADMIN_TOKEN } }).catch(noop);
+		}
 	}
 }

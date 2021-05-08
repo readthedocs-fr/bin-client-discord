@@ -2,8 +2,8 @@ import { Client } from "./classes";
 import { logError } from "./helpers/logError";
 
 const client = new Client({
+	messageEditHistoryMaxSize: 0,
 	partials: ["USER", "GUILD_MEMBER"],
-	messageCacheMaxSize: 0, // don't cache messages
 	ws: {
 		intents: ["GUILD_MESSAGES", "GUILDS", "GUILD_MESSAGE_REACTIONS"],
 	},

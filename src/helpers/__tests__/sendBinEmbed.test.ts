@@ -49,6 +49,7 @@ describe(sendBinEmbed, () => {
 		await sendBinEmbed(
 			(message as unknown) as Message,
 			"hey",
+			undefined,
 			(embed) => embed.addField("this", "is", true),
 			attachments.clone().set("3", new MessageAttachment(`${cdnLink}4.jpg`, "4.jpg", { size: 1e6 })),
 		);

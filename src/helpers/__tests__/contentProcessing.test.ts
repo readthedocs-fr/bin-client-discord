@@ -25,7 +25,10 @@ describe(processContent, () => {
 				`see : \`\`\`js\nthis\nis\nmulti\nline !\`\`\` \`\`\`${"and this is big\n".repeat(4097)}\`\`\``,
 				MAX_LINES,
 			),
-		).toEqual(expect.stringMatching(`see : ${binUrl("js")} \\[Err(eu|o)r( [0-9]+ )?: .+\\.?\\]`));
+		).toStrictEqual([
+			expect.stringMatching(`see : ${binUrl("js")} \\[Err(eu|o)r( [0-9]+ )?: .+\\.?\\]`),
+			expect.stringMatching(binUrl("js")),
+		]);
 	});
 
 	it("should return undefined if there are no changes", async () => {
@@ -33,17 +36,17 @@ describe(processContent, () => {
 	});
 
 	it("should replace duplicated codes by the same bin url", async () => {
-		const results = (await processContent("`\na\nb\nc` et `\na\nb\nc`", MAX_LINES))?.split(" et ", 2);
+		const results = (await processContent("`\na\nb\nc` et `\na\nb\nc`", MAX_LINES))?.[0].split(" et ", 2);
 		expect(results).not.toBeUndefined();
 		expect(results?.[0]).toEqual(results?.[1]);
 
-		const results2 = (await processContent("```js\na\nb\nc``` ```js\na\nb\nc```", MAX_LINES))?.split(" ", 2);
+		const results2 = (await processContent("```js\na\nb\nc``` ```js\na\nb\nc```", MAX_LINES))?.[0].split(" ", 2);
 		expect(results2).not.toBeUndefined();
 		expect(results2?.[0]).toEqual(results2?.[1]);
 	});
 
 	it("should replace duplicated codes by the same bin url with different extension", async () => {
-		const results = (await processContent("```python\na\nb``` ```py\na\nb```", 1))?.split(" ", 2);
+		const results = (await processContent("```python\na\nb``` ```py\na\nb```", 1))?.[0].split(" ", 2);
 		expect(results).not.toBeUndefined();
 		expect(results?.[0]).toEqual(`${results?.[1].slice(0, -3)}python>`);
 	});
