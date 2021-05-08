@@ -7,8 +7,9 @@ import { createBin, processContent, request, sendBinEmbed } from "../../helpers"
 import { extensions } from "../../misc";
 
 const MAX_LINES = parseInt(process.env.MAX_LINES!, 10);
-const ORIGIN_URL = new URL(process.env.BIN_URL!).origin;
+const HEALTH_URL = new URL("/health", process.env.BIN_URL);
 const REQUEST_TIMEOUT = parseInt(process.env.REQUEST_TIMEOUT!, 10) || 5000;
+const CATEGORIES = process.env.CATEGORIES!.split(",");
 
 const noop = (): undefined => undefined;
 
@@ -18,8 +19,6 @@ export default class MessageEvent extends Event {
 	}
 
 	public async listener(message: Message): Promise<void> {
-		const categories = process.env.CATEGORIES!.split(",");
-
 		if (!(message.channel instanceof GuildChannel) || message.author.bot) {
 			return;
 		}
@@ -37,7 +36,7 @@ export default class MessageEvent extends Event {
 				return;
 			}
 
-			const binHealth = await request.head(`${ORIGIN_URL}/health`).catch(noop);
+			const binHealth = await request.head(HEALTH_URL).catch(noop);
 
 			const embed = new MessageEmbed()
 				.setColor(binHealth ? 0x2ab533 : 0xf33030)
@@ -50,7 +49,7 @@ export default class MessageEvent extends Event {
 			return;
 		}
 
-		if (!categories.includes(message.channel.parentID!)) {
+		if (!CATEGORIES.includes(message.channel.parentID!)) {
 			return;
 		}
 
@@ -80,7 +79,8 @@ export default class MessageEvent extends Event {
 
 				sendBinEmbed(
 					message,
-					processed || message.content,
+					processed?.[0] ?? message.content,
+					processed?.[1],
 					content ? (embed): MessageEmbed => embed.addField("📁 Pièce jointe", content) : undefined,
 					message.attachments.size > 0 ? message.attachments : undefined,
 				);
@@ -88,7 +88,7 @@ export default class MessageEvent extends Event {
 				const errorEmbed = new MessageEmbed({ title: error.toString() });
 				errorEmbed.setDescription(
 					// eslint-disable-next-line max-len
-					`Cependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent).\n\nNous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${ORIGIN_URL} (s'il est hors-ligne, utilisez d'autres alternatives comme https://paste.artemix.org/).`,
+					`Cependant, bien que votre message n'ait pas été effacé, il a été jugé trop "lourd" pour être lu (code trop long, fichier texte présent).\n\nNous vous conseillons l'usage d'un service de bin pour les gros morceaux de code, tel ${HEALTH_URL.origin} (s'il est hors-ligne, utilisez d'autres alternatives comme https://paste.artemix.org/).`,
 				);
 				message.channel.send(errorEmbed).catch(noop);
 			}
@@ -107,7 +107,8 @@ export default class MessageEvent extends Event {
 		if (processed) {
 			sendBinEmbed(
 				message,
-				processed,
+				processed[0],
+				processed[1],
 				undefined,
 				message.attachments.size > 0 ? message.attachments : undefined,
 			).catch(noop);

@@ -1,5 +1,3 @@
-import { extname } from "path";
-
 import { BinError } from "../misc/BinError";
 import { createBin } from "./createBin";
 import { logError } from "./logError";
@@ -72,12 +70,11 @@ function insertAt(source: string, insertion: string, start: number, end = start)
 	return source.slice(0, start) + insertion + source.slice(end);
 }
 
-export async function processContent(source: string, maxLines: number): Promise<string | undefined> {
-	const codes = new Map<string, (ext?: string) => string>();
+export async function processContent(source: string, maxLines: number): Promise<[string, string[]] | undefined> {
+	const codes = new Map<string, string | Error>();
 	let final = source;
 
 	let escaped = false;
-	let errors = 0;
 
 	for (let i = 0; i < final.length; i++) {
 		const char = final[i];
@@ -103,32 +100,33 @@ export async function processContent(source: string, maxLines: number): Promise<
 				continue;
 			}
 
-			let bin = codes.get(result.content.trim())?.(result.lang);
+			const content = result.content.trim();
+			let bin: string | Error | undefined = codes.get(content);
 
 			if (!bin) {
-				const link = await createBin({ code: result.content, filename: `..${result.lang || "txt"}` })
-					.then((url) => (ext = "txt"): string => `<${url.replace(extname(url), `.${ext}`)}>`)
+				bin = await createBin({ code: result.content, filename: `..${result.lang || "txt"}` })
+					.then((url) => url.slice(0, url.lastIndexOf(".")))
 					// eslint-disable-next-line @typescript-eslint/no-loop-func
 					.catch((e: Error) => {
-						errors++;
 						// log if the error is critical.
 						if (!(e instanceof BinError) || [400, 403, 404, 405].includes(e.code) || e.code >= 500) {
 							logError(e);
 						}
-						return (): string => `[${e}]`;
+						return e;
 					});
-
-				bin = link(result.lang);
-				codes.set(result.content.trim(), link);
+				codes.set(content, bin);
 			}
 
-			final = insertAt(final, bin, start + 1, i + result.end);
-			i += bin.length - 1;
+			const text = typeof bin === "string" ? `<${bin}.${result.lang || "txt"}>` : `[${bin}]`;
+			final = insertAt(final, text, start + 1, i + result.end);
+			i += text.length - 1;
 
 			continue;
 		}
 
 		escaped = false;
 	}
-	return codes.size - errors > 0 ? final : undefined;
+
+	const binUrls = [...codes.values()].filter((code): code is string => typeof code === "string");
+	return binUrls.length > 0 ? [final, binUrls] : undefined;
 }
