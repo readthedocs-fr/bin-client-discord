@@ -4,6 +4,7 @@ import { request } from "./request";
 
 const noop = (): undefined => undefined;
 
+const DELETE_MIN_REACTIONS = parseInt(process.env.DELETE_MIN_REACTIONS!, 10);
 const ADMIN_TOKEN = `Token ${process.env.BINS_TOKEN!}`;
 const MAX_ATTACHMENTS_SIZE = 8_388_381;
 
@@ -58,7 +59,12 @@ export async function sendBinEmbed(
 			if (reaction.emoji.name !== "🗑️") {
 				return false;
 			}
-			return user === message.author || message.guild!.member(user)?.permissions.has("MANAGE_MESSAGES") || false;
+			return (
+				user.id === message.author.id ||
+				reaction.count! >= DELETE_MIN_REACTIONS ||
+				message.guild!.member(user)?.permissions.has("MANAGE_MESSAGES") ||
+				false
+			);
 		},
 		{ max: 1, time: 30_000 },
 	);

@@ -20,7 +20,7 @@ export async function createBin({ code, lifeTime, maxUses, filename }: BinOption
 	const fd = new FormData();
 	fd.append("lifetime", (lifeTime || 0).toString());
 	fd.append("maxusage", (maxUses ?? 0).toString());
-	fd.append("code", code.replace(TOKEN_REGEXP, "[DISCORD TOKEN DETECTED]"), {
+	fd.append(filename, code.replace(TOKEN_REGEXP, "[DISCORD TOKEN DETECTED]"), {
 		filename,
 		type: "text/plain; charset=utf-8",
 	});
