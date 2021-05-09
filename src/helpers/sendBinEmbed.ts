@@ -10,8 +10,10 @@ export async function sendBinEmbed(
 	extender?: (embed: MessageEmbed) => MessageEmbed,
 	attachments?: Collection<Snowflake, MessageAttachment>,
 ): Promise<void> {
-	const embed = new MessageEmbed({ description })
-		.setAuthor(message.member!.displayName, message.author.displayAvatarURL({ dynamic: true }));
+	const embed = new MessageEmbed({ description }).setAuthor(
+		message.member!.displayName,
+		message.author.displayAvatarURL({ dynamic: true }),
+	);
 
 	if (extender) {
 		extender(embed);
