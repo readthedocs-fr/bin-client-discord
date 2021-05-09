@@ -11,8 +11,7 @@ export async function sendBinEmbed(
 	attachments?: Collection<Snowflake, MessageAttachment>,
 ): Promise<void> {
 	const embed = new MessageEmbed({ description })
-		.setAuthor(message.member!.displayName, message.author.displayAvatarURL({ dynamic: true }))
-		.setTimestamp(message.createdAt);
+		.setAuthor(message.member!.displayName, message.author.displayAvatarURL({ dynamic: true }));
 
 	if (extender) {
 		extender(embed);
