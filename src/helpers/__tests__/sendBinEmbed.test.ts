@@ -58,7 +58,6 @@ describe(sendBinEmbed, () => {
 		expect(message.channel.send).toHaveBeenLastCalledWith({
 			embed: new MessageEmbed({ description: "hey" })
 				.setAuthor(message.member!.displayName, message.author.displayAvatarURL())
-				.setTimestamp(message.createdAt)
 				.addField("this", "is", true),
 			files: attachments.array(),
 		});
