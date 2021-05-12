@@ -42,8 +42,8 @@ export default class MessageEvent extends Event {
 			const embed = new MessageEmbed()
 				.setColor(binHealth ? 0x2ab533 : 0xf33030)
 				.addField("État du bin", binHealth ? "En ligne" : "Hors ligne", true)
-				.addField("Latence du bot", `${pingMessage.createdTimestamp - message.createdTimestamp} ms`, true)
-				.addField("Latence du WebSocket", `${Math.round(this.client.ws.ping)} ms`, true);
+				.addField("Latence du bot", `${pingMessage.createdTimestamp - message.createdTimestamp}ms`, true)
+				.addField("Latence du WebSocket", `${Math.round(this.client.ws.ping)}ms`, true);
 
 			pingMessage.edit("", embed).catch(noop);
 
