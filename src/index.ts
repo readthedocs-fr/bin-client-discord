@@ -2,7 +2,7 @@ import { Client } from "./classes";
 import { logError } from "./helpers/logError";
 
 const client = new Client({
-	partials: ["USER", "GUILD_MEMBER"],
+	partials: ["USER", "GUILD_MEMBER", "MESSAGE"],
 	messageCacheMaxSize: 0, // don't cache messages
 	ws: {
 		intents: ["GUILD_MESSAGES", "GUILDS", "GUILD_MESSAGE_REACTIONS"],
