@@ -2,17 +2,17 @@ import { ClientEvents } from "discord.js";
 
 import { Client } from "./Client";
 
-type EventName = keyof ClientEvents | string;
+type EventName = keyof ClientEvents | (string & { _: never });
 
-export abstract class Event {
-	public readonly event: EventName;
+export interface EventContext {
+	client: Client;
+}
 
-	protected readonly client: Client;
+type EventListener<E> = (
+	this: EventContext,
+	...args: E extends keyof ClientEvents ? ClientEvents[E] : unknown[]
+) => Promise<void> | void;
 
-	protected constructor(event: EventName, client: Client) {
-		this.event = event;
-		this.client = client;
-	}
-
-	public abstract listener(...args: unknown[]): Promise<void> | void;
+export class Event<E extends EventName = EventName> {
+	constructor(public readonly name: E, public readonly listener: EventListener<E>) {}
 }

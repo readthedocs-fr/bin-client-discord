@@ -23,6 +23,7 @@
 	},
 	"plugins": ["@typescript-eslint", "import", "simple-import-sort", "prettier"],
 	"rules": {
+		"func-names": "off",
 		"prettier/prettier": "error",
 		"simple-import-sort/imports": "error",
 		"simple-import-sort/exports": "error",
