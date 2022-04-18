@@ -1,4 +1,4 @@
-import { BinError, errors } from "..";
+import { BinError, errors } from "../index.js";
 
 describe(BinError, () => {
 	it("should return the correct name", () => {

@@ -1,8 +1,8 @@
 import { FormData } from "@typescord/famfor";
 import { Headers, HTTPError, TimeoutError } from "got";
 
-import { BinError } from "../misc/BinError";
-import { request } from "./request";
+import { BinError } from "../misc/index.js";
+import { request } from "./index.js";
 
 const TOKEN_REGEXP = /[a-z\d]{24}\.[a-z\d]{6}\.[\w-]{27}|mfa\.[\w-]{84}/gi;
 
@@ -24,8 +24,8 @@ export async function createBin({ code, lifeTime, maxUses, filename }: BinOption
 	});
 
 	return request
-		.post(process.env.BIN_URL!, {
-			headers: (fd.headers as unknown) as Headers,
+		.post(process.env.CREATE_BIN_URL!, {
+			headers: fd.headers as unknown as Headers,
 			body: fd.stream,
 		})
 		.then(({ headers }) => headers.location!)

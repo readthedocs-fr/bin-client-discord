@@ -1,6 +1,6 @@
 import { Collection, Message, MessageAttachment, MessageEmbed, Snowflake } from "discord.js";
 
-import { sendBinEmbed } from "..";
+import { sendBinEmbed } from "../index.js";
 
 const cdnLink = "https://cdn.discordapp.com/attachments/0/0/";
 
@@ -17,7 +17,7 @@ class MockMessage {
 		displayName: "Mysterious",
 	};
 
-	public readonly channel = {
+	public readonly channel: Record<PropertyKey, unknown> = {
 		send: jest.fn(async () => this),
 	};
 
@@ -42,31 +42,31 @@ describe(sendBinEmbed, () => {
 		const attachments = new Collection<Snowflake, MessageAttachment>(
 			Array.from({ length: 3 }, (_, i) => [
 				i.toString(),
-				new MessageAttachment(`${cdnLink}${i}.jpg`, `${i}.jpg`, { size: 279e4 }),
+				new MessageAttachment(`${cdnLink}${i}.jpg`, `${i}.jpg`),
 			]),
 		);
 
 		await sendBinEmbed(
-			(message as unknown) as Message,
+			message as unknown as Message,
 			"hey",
 			(embed) => embed.addField("this", "is", true),
-			attachments.clone().set("3", new MessageAttachment(`${cdnLink}4.jpg`, "4.jpg", { size: 1e6 })),
+			attachments.clone().set("3", new MessageAttachment(`${cdnLink}4.jpg`, "4.jpg")),
 		);
 
 		expect(message.channel.send).toBeCalledTimes(2);
 		expect(message.channel.send).toBeCalledWith("Transformation du message en cours...");
 		expect(message.channel.send).toHaveBeenLastCalledWith({
 			embed: new MessageEmbed({ description: "hey" })
-				.setAuthor(message.member!.displayName, message.author.displayAvatarURL())
+				.setAuthor({ name: message.member!.displayName, iconURL: message.author.displayAvatarURL() })
 				.setTimestamp(message.createdAt)
 				.addField("this", "is", true),
-			files: attachments.array(),
+			files: [...attachments],
 		});
 	});
 
 	it("should react with 🗑️", async () => {
 		const message = new MockMessage();
-		await sendBinEmbed((message as unknown) as Message, "hey");
+		await sendBinEmbed(message as unknown as Message, "hey");
 
 		expect(message.react).toBeCalledTimes(1);
 		expect(message.react).toBeCalledWith("🗑️");
@@ -74,7 +74,7 @@ describe(sendBinEmbed, () => {
 
 	it("should correctly handle reactions", async () => {
 		const message = new MockMessage();
-		await sendBinEmbed((message as unknown) as Message, "hey");
+		await sendBinEmbed(message as unknown as Message, "hey");
 
 		expect(message.awaitReactions).toBeCalledTimes(1);
 		expect(message.reactions.removeAll).not.toBeCalled();
@@ -82,7 +82,7 @@ describe(sendBinEmbed, () => {
 
 	it("should delete the right number of messages", async () => {
 		const message = new MockMessage();
-		await sendBinEmbed((message as unknown) as Message, "hey");
+		await sendBinEmbed(message as unknown as Message, "hey");
 
 		expect(message.delete).toBeCalledTimes(3);
 	});

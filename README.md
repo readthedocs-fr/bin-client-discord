@@ -31,3 +31,18 @@ git add .
 git commit -m "conventional commit"
 git push origin <branch_name>
 ```
+
+## Environment vars
+
+```sh
+# From how many lines the bot should transform messages
+MAX_LINES=20
+# Bin URL with "/new" path
+CREATE_BIN_URL=http://127.0.0.1:8012/new
+# Your bot's token
+DISCORD_TOKEN=
+# Discord categories' ID, comma-separated
+CATEGORIES=
+# ms
+REQUEST_TIMEOUT=5000
+```
