@@ -1,3 +1,2 @@
-export * from "./Client";
-export * from "./Command";
-export * from "./Event";
+export * from "./Client.js";
+export * from "./Event.js";

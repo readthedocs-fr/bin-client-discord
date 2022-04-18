@@ -1,6 +1,6 @@
 import { ClientEvents } from "discord.js";
 
-import { Client } from "./Client";
+import { Client } from "./index.js";
 
 type EventName = keyof ClientEvents | string;
 

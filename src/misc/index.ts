@@ -1,2 +1,2 @@
-export * from "./BinError";
-export * from "./extensions";
+export * from "./BinError.js";
+export * from "./extensions.js";

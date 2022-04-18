@@ -10,14 +10,6 @@ export async function sendBinEmbed(
 	extender?: (embed: MessageEmbed) => MessageEmbed,
 	attachments?: Collection<Snowflake, MessageAttachment>,
 ): Promise<void> {
-	const embed = new MessageEmbed({ description })
-		.setAuthor(message.member!.displayName, message.author.displayAvatarURL({ dynamic: true }))
-		.setTimestamp(message.createdAt);
-
-	if (extender) {
-		extender(embed);
-	}
-
 	const waitMessage = await message.channel.send("Transformation du message en cours...").catch(noop);
 	const files: MessageAttachment[] = [];
 
@@ -33,7 +25,15 @@ export async function sendBinEmbed(
 		}
 	}
 
-	const botMessage = await message.channel.send({ embed, files }).catch(noop);
+	const embed = new MessageEmbed({ description })
+		.setAuthor({ name: message.member!.displayName, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+		.setTimestamp(message.createdAt);
+
+	if (extender) {
+		extender(embed);
+	}
+
+	const botMessage = await message.channel.send({ embeds: [embed], files }).catch(noop);
 
 	if (waitMessage?.deletable) {
 		await waitMessage.delete().catch(noop);
@@ -49,10 +49,12 @@ export async function sendBinEmbed(
 
 	await botMessage.react("🗑️");
 
-	const collector = await botMessage.awaitReactions(
-		({ emoji }: MessageReaction, user: User) => user.id === message.author.id && emoji.name === "🗑️",
-		{ max: 1, time: 20_000 },
-	);
+	const collector = await botMessage.awaitReactions({
+		filter: ({ emoji }: MessageReaction, user: User) => user.id === message.author.id && emoji.name === "🗑️",
+		max: 1,
+		time: 20_000,
+	});
+
 	if (collector.size === 0) {
 		botMessage.reactions.removeAll().catch(noop);
 		return;
