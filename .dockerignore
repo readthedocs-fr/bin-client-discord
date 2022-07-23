@@ -1,0 +1,14 @@
+.git/
+.github/
+.vscode/
+
+.editorconfig
+.env.example
+.gitattributes
+.gitignore
+Dockerfile
+LICENSE
+README.md
+rtdbin-docker-compose.yml
+
+src/**/\_\_tests\_\_
